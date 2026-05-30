@@ -21,7 +21,6 @@
   --text-secondary: #5C3D1A;
   --neon-intensity: 0.4;
   --scanline-opacity: 0.03;
-  --theme: 'day';
 }
 
 [data-theme="night"] {
@@ -31,7 +30,6 @@
   --text-secondary: #00F5D4;
   --neon-intensity: 1;
   --scanline-opacity: 0.07;
-  --theme: 'night';
 }
 
 /* ============================================
@@ -103,63 +101,61 @@ body {
 }
 
 /* ============================================
-   NEON GLOW UTILITIES
+   NEON GLOW UTILITIES — night only
    ============================================ */
 .neon-pink {
-  color: var(--hot-pink);
-  text-shadow:
-    0 0 7px var(--hot-pink),
-    0 0 10px var(--hot-pink),
-    0 0 21px var(--hot-pink),
-    0 0 42px var(--hot-pink);
+  color: #FF006E;
 }
 
 .neon-cyan {
-  color: var(--electric-cyan);
+  color: #00F5D4;
+}
+
+[data-theme="night"] .neon-pink {
   text-shadow:
-    0 0 7px var(--electric-cyan),
-    0 0 10px var(--electric-cyan),
-    0 0 21px var(--electric-cyan),
-    0 0 42px var(--electric-cyan);
+    0 0 7px #FF006E,
+    0 0 10px #FF006E,
+    0 0 21px #FF006E,
+    0 0 42px #FF006E;
 }
 
-.neon-border-pink {
+[data-theme="night"] .neon-cyan {
+  text-shadow:
+    0 0 7px #00F5D4,
+    0 0 10px #00F5D4,
+    0 0 21px #00F5D4,
+    0 0 42px #00F5D4;
+}
+
+[data-theme="night"] .neon-border-pink {
   box-shadow:
-    0 0 5px var(--hot-pink),
-    0 0 10px var(--hot-pink),
-    0 0 20px var(--hot-pink),
+    0 0 5px #FF006E,
+    0 0 10px #FF006E,
+    0 0 20px #FF006E,
     inset 0 0 5px rgba(255, 0, 110, 0.1);
-  border: 1px solid var(--hot-pink);
+  border: 1px solid #FF006E;
 }
 
-.neon-border-cyan {
+[data-theme="night"] .neon-border-cyan {
   box-shadow:
-    0 0 5px var(--electric-cyan),
-    0 0 10px var(--electric-cyan),
-    0 0 20px var(--electric-cyan),
+    0 0 5px #00F5D4,
+    0 0 10px #00F5D4,
+    0 0 20px #00F5D4,
     inset 0 0 5px rgba(0, 245, 212, 0.1);
-  border: 1px solid var(--electric-cyan);
+  border: 1px solid #00F5D4;
 }
 
 /* ============================================
    NEON FLICKER ANIMATION
    ============================================ */
 @keyframes neon-flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
-  }
-  20%, 24%, 55% {
-    opacity: 0.6;
-  }
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.6; }
 }
 
 @keyframes neon-flicker-subtle {
-  0%, 89%, 91%, 100% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 0.85;
-  }
+  0%, 89%, 91%, 100% { opacity: 1; }
+  90% { opacity: 0.85; }
 }
 
 .neon-flicker {
@@ -206,33 +202,20 @@ body {
 @keyframes glow-pulse {
   0%, 100% {
     box-shadow:
-      0 0 5px var(--hot-pink),
-      0 0 10px var(--hot-pink),
-      0 0 20px var(--hot-pink);
+      0 0 5px #FF006E,
+      0 0 10px #FF006E,
+      0 0 20px #FF006E;
   }
   50% {
     box-shadow:
-      0 0 10px var(--hot-pink),
-      0 0 25px var(--hot-pink),
-      0 0 50px var(--hot-pink);
+      0 0 10px #FF006E,
+      0 0 25px #FF006E,
+      0 0 50px #FF006E;
   }
 }
 
 .glow-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
-}
-
-/* ============================================
-   TYPEWRITER
-   ============================================ */
-@keyframes typewriter {
-  from { width: 0; }
-  to   { width: 100%; }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent; }
-  50%      { border-color: var(--hot-pink); }
 }
 
 /* ============================================
@@ -262,6 +245,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--hot-pink);
+  background: #FF006E;
   border-radius: 3px;
 }

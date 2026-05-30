@@ -13,11 +13,11 @@ const colorMap = {
     border: '1px solid #00F5D4',
     boxShadow: '0 0 5px #00F5D4, 0 0 10px #00F5D4, 0 0 20px #00F5D4, inset 0 0 5px rgba(0,245,212,0.1)',
   },
-  yellow: {
-    text: '#FFE600',
-    shadow: '0 0 7px #FFE600, 0 0 10px #FFE600, 0 0 21px #FFE600, 0 0 42px #FFE600',
-    border: '1px solid #FFE600',
-    boxShadow: '0 0 5px #FFE600, 0 0 10px #FFE600, 0 0 20px #FFE600, inset 0 0 5px rgba(255,230,0,0.1)',
+  orange: {
+    text: '#FF6B00',
+    shadow: '0 0 7px #FF6B00, 0 0 10px #FF6B00, 0 0 21px #FF6B00, 0 0 42px #FF6B00',
+    border: '1px solid #FF6B00',
+    boxShadow: '0 0 5px #FF6B00, 0 0 10px #FF6B00, 0 0 20px #FF6B00, inset 0 0 5px rgba(255,107,0,0.1)',
   },
 }
 
@@ -28,7 +28,6 @@ const sizeClasses = {
   xl: 'text-6xl px-10 py-4',
 }
 
-// Computed once at module load, not during render
 const flickerDelay = Math.random() * 8 + 4
 
 const flickerVariants = {
@@ -49,6 +48,7 @@ export default function NeonSign({
   size = 'md',
   flicker = false,
   bordered = false,
+  isNight = false,
   className = '',
 }) {
   const colors = colorMap[color] || colorMap.pink
@@ -58,10 +58,10 @@ export default function NeonSign({
       className={`font-display inline-block ${sizeClasses[size]} ${className}`}
       style={{
         color: colors.text,
-        textShadow: colors.shadow,
+        textShadow: isNight ? colors.shadow : 'none',
         ...(bordered && {
           border: colors.border,
-          boxShadow: colors.boxShadow,
+          boxShadow: isNight ? colors.boxShadow : 'none',
           borderRadius: '4px',
         }),
       }}
