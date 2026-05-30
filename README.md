@@ -55,27 +55,27 @@ No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
 
 ```
 You open the app
-    -> The shopfront. Day or night. Big Tony at the door.
+    ♫  The shopfront. Day or night. Big Tony at the door.
 
 You tap to enter
-    -> You're inside. Wood panels, neon signs, crates of vinyl everywhere.
-    -> Tony waves. "Welcome to Dusty Grooves, my friend!"
+    ♫  You're inside. Wood panels, neon signs, crates of vinyl everywhere.
+    ♫  Tony waves. "Welcome to Dusty Grooves, my friend!"
 
 You search for a song
-    -> Tony perks up, points at the record wall.
-    -> He digs through the crates while results load.
+    ♫  Tony perks up, points at the record wall.
+    ♫  He digs through the crates while results load.
 
 You pick a track
-    -> Vinyl slides onto the turntable and starts spinning.
-    -> Album art on the label. "NOW SPINNING" sign lights up.
-    -> The music plays. Tony vibes.
+    ♫  Vinyl slides onto the turntable and starts spinning.
+    ♫  Album art on the label. "NOW SPINNING" sign lights up.
+    ♫  The music plays. Tony vibes.
 
 Can't find it?
-    -> Tony shrugs. "Can't find that one, my friend. Try another?"
+    ♫  Tony shrugs. "Can't find that one, my friend. Try another?"
 
 Something broke?
-    -> Tony holds up a cracked record, looking at it with comic dismay.
-    -> "Even the best records skip sometimes."
+    ♫  Tony holds up a cracked record, looking at it with comic dismay.
+    ♫  "Even the best records skip sometimes."
 ```
 
 <p align="center">
@@ -94,9 +94,9 @@ This isn't a theme toggle. It's time of day at Dusty Grooves.
   <img src="public/images/shop-exterior-night.png" alt="Dusty Grooves at night" width="48%" />
 </p>
 
-**Day mode** - warm sunlight, faded awning, a sandwich board outside that reads *"If it ain't vinyl, it ain't real."* The shop looks lived-in, sun-bleached, and loved.
+**Daytime** - warm sunlight, faded awning, a sandwich board outside that reads *"If it ain't vinyl, it ain't real."* The shop looks lived-in, sun-bleached, and loved.
 
-**Night mode** - the neon kicks in. Hot pink sign glowing. Warm golden light spilling from the windows onto an empty sidewalk. The street is dark and quiet. Dusty Grooves is the only light on the block. It feels like discovering a secret.
+**Nighttime** - the neon kicks in. Hot pink sign glowing. Warm golden light spilling from the windows onto an empty sidewalk. The street is dark and quiet. Dusty Grooves is the only light on the block. It feels like discovering a secret.
 
 ---
 
@@ -112,8 +112,8 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 | **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
 | **The sound** | Piped API - audio-only streams, no video data. Keeps it light on mobile data |
 | **The playback** | Plain HTML5 `<audio>` element. No libraries, no bloat |
-| **Big Tony & the shop** | All visuals generated with DALL-E / ChatGPT. Six character poses, three shop environments |
-| **The home** | GitHub Pages or Vercel. Free |
+| **Big Tony & the shop** | Dreamed up in the neon dream machine. Six character poses, three shop environments |
+| **The home** | GitHub Pages. Free |
 
 **Total cost: $0**
 
@@ -121,15 +121,25 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 
 ## 🎨 The Palette
 
-```
-Hot Pink        #FF006E   ████  Neon signs, active states, the glow
-Electric Cyan   #00F5D4   ████  Highlights, hover states, "NOW SPINNING"
-Deep Purple     #3D0066   ████  Shadows, depth, night mode
-Neon Orange     #FF6B00   ████  Warmth, accents
-Near Black      #0A0010   ████  The night
-Warm Cream      #FFF5E1   ████  The daylight
-Wood Brown      #5C3D1A   ████  The counter, the crates, the walls
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Hot%20Pink-%23FF006E-FF006E?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Electric%20Cyan-%2300F5D4-00F5D4?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Deep%20Purple-%233D0066-3D0066?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Neon%20Orange-%23FF6B00-FF6B00?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Near%20Black-%230A0010-0A0010?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Warm%20Cream-%23FFF5E1-FFF5E1?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Wood%20Brown-%235C3D1A-5C3D1A?style=for-the-badge" />
+</p>
+
+| Colour | Hex | Usage |
+|--------|-----|-------|
+| Hot Pink | `#FF006E` | Neon signs, active states, the glow |
+| Electric Cyan | `#00F5D4` | Highlights, hover states, "NOW SPINNING" |
+| Deep Purple | `#3D0066` | Shadows, depth, nighttime |
+| Neon Orange | `#FF6B00` | Warmth, accents |
+| Near Black | `#0A0010` | The night |
+| Warm Cream | `#FFF5E1` | The daylight |
+| Wood Brown | `#5C3D1A` | The counter, the crates, the walls |
 
 ---
 
@@ -173,7 +183,7 @@ dusty-grooves/
 **1. Clone the shop**
 
 ```bash
-git clone https://github.com/yourusername/dusty-grooves.git
+git clone https://github.com/bytiagodev/dusty-grooves.git
 cd dusty-grooves
 ```
 
@@ -217,8 +227,8 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 
 ## 🎙️ Credits
 
-- **Concept, design, and build** - me
-- **Big Tony and all shop visuals** - generated with ChatGPT / DALL-E
+- **Concept, design, and build** - [bytiagodev](https://github.com/bytiagodev)
+- **Big Tony and all shop visuals** - dreamed up in the neon dream machine
 - **Music metadata and artwork** - [Last.fm API](https://www.last.fm/api)
 - **Audio streams** - [Piped](https://github.com/TeamPiped/Piped)
 - **Fonts** - [Google Fonts](https://fonts.google.com/)
