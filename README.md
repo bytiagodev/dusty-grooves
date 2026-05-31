@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/shop-exterior-night.png" alt="Dusty Grooves at night - neon sign glowing on a quiet street" width="100%" />
+  <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night - neon sign glowing on a quiet street" width="100%" />
 </p>
 
 <h1 align="center">🎵 Dusty Grooves</h1>
@@ -28,7 +28,7 @@ You tap to walk in.
 ## 🕶️ Meet Big Tony
 
 <p align="center">
-  <img src="public/images/tony-welcome.png" alt="Big Tony waving hello" width="280" />
+  <img src="public/images/tony-welcome.png" alt="Big Tony waving hello" height="320" />
 </p>
 
 Big Tony opened Dusty Grooves in 1983 and never left.
@@ -44,9 +44,11 @@ Search for a song, and Tony points you to the right crate. Pick a track, and the
 No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
 
 <p align="center">
-  <img src="public/images/tony-pointing.png" alt="Big Tony pointing at the records" width="200" />
-  <img src="public/images/tony-vibing.png" alt="Big Tony vibing to the music" width="200" />
-  <img src="public/images/tony-searching.png" alt="Big Tony searching through crates" width="200" />
+  <img src="public/images/tony-pointing.png" alt="Big Tony pointing at the records" height="260" />
+  &emsp;&emsp;&emsp;&emsp;&emsp;
+  <img src="public/images/tony-vibing.png" alt="Big Tony vibing to the music" height="260" />
+  &emsp;&emsp;&emsp;&emsp;&emsp;
+  <img src="public/images/tony-searching.png" alt="Big Tony searching through crates" height="260" />
 </p>
 
 ---
@@ -79,8 +81,9 @@ Something broke?
 ```
 
 <p align="center">
-  <img src="public/images/tony-shrug.png" alt="Big Tony shrugging" width="200" />
-  <img src="public/images/tony-error.png" alt="Big Tony holding a broken record" width="200" />
+  <img src="public/images/tony-shrug.png" alt="Big Tony shrugging" height="260" />
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+  <img src="public/images/tony-error.png" alt="Big Tony holding a broken record" height="260" />
 </p>
 
 ---
@@ -90,8 +93,8 @@ Something broke?
 This isn't a theme toggle. It's time of day at Dusty Grooves.
 
 <p align="center">
-  <img src="public/images/shop-exterior-day.png" alt="Dusty Grooves in the daytime" width="48%" />
-  <img src="public/images/shop-exterior-night.png" alt="Dusty Grooves at night" width="48%" />
+  <img src="public/images/shop-exterior-day.webp" alt="Dusty Grooves in the daytime" width="48%" />
+  <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night" width="48%" />
 </p>
 
 **Daytime** - warm sunlight, faded awning, a sandwich board outside that reads *"If it ain't vinyl, it ain't real."* The shop looks lived-in, sun-bleached, and loved.
@@ -237,7 +240,7 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 ---
 
 <p align="center">
-  <img src="public/images/shop-interior.png" alt="Inside Dusty Grooves" width="100%" />
+  <img src="public/images/shop-interior.webp" alt="Inside Dusty Grooves" width="100%" />
 </p>
 
 <p align="center">
