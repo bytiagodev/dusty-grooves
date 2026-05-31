@@ -1,74 +1,75 @@
-import { motion } from 'framer-motion'
+import { motion } from 'framer-motion';
 
-const colorMap = {
+const CONFIGS = {
   pink: {
-    text: '#FF006E',
-    shadow: '0 0 7px #FF006E, 0 0 10px #FF006E, 0 0 21px #FF006E, 0 0 42px #FF006E',
-    border: '1px solid #FF006E',
-    boxShadow: '0 0 5px #FF006E, 0 0 10px #FF006E, 0 0 20px #FF006E, inset 0 0 5px rgba(255,0,110,0.1)',
+    color: '#FF006E',
+    glow: '0 0 7px #FF006E, 0 0 14px #FF006E, 0 0 28px #FF006E',
+    glowStrong: '0 0 10px #FF006E, 0 0 25px #FF006E, 0 0 50px #FF006E',
+    dimColor: '#660030',
+    dimGlow: 'none',
   },
   cyan: {
-    text: '#00F5D4',
-    shadow: '0 0 7px #00F5D4, 0 0 10px #00F5D4, 0 0 21px #00F5D4, 0 0 42px #00F5D4',
-    border: '1px solid #00F5D4',
-    boxShadow: '0 0 5px #00F5D4, 0 0 10px #00F5D4, 0 0 20px #00F5D4, inset 0 0 5px rgba(0,245,212,0.1)',
+    color: '#00F5D4',
+    glow: '0 0 7px #00F5D4, 0 0 14px #00F5D4, 0 0 28px #00F5D4',
+    glowStrong: '0 0 10px #00F5D4, 0 0 25px #00F5D4, 0 0 50px #00F5D4',
+    dimColor: '#003d35',
+    dimGlow: 'none',
   },
-  orange: {
-    text: '#FF6B00',
-    shadow: '0 0 7px #FF6B00, 0 0 10px #FF6B00, 0 0 21px #FF6B00, 0 0 42px #FF6B00',
-    border: '1px solid #FF6B00',
-    boxShadow: '0 0 5px #FF6B00, 0 0 10px #FF6B00, 0 0 20px #FF6B00, inset 0 0 5px rgba(255,107,0,0.1)',
-  },
-}
+};
 
-const sizeClasses = {
-  sm: 'text-lg px-3 py-1',
-  md: 'text-2xl px-5 py-2',
-  lg: 'text-4xl px-7 py-3',
-  xl: 'text-6xl px-10 py-4',
-}
-
-const flickerDelay = Math.random() * 8 + 4
-
-const flickerVariants = {
-  on: { opacity: 1 },
-  flicker: {
-    opacity: [1, 0.6, 1, 0.8, 1, 0.6, 1],
-    transition: {
-      duration: 0.5,
-      repeat: Infinity,
-      repeatDelay: flickerDelay,
-    },
-  },
-}
+const SIZES = {
+  large: { fontSize: '2.8rem', letterSpacing: '0.15em', borderWidth: '3px', padding: '0.3rem 1.2rem' },
+  small: { fontSize: '1.1rem', letterSpacing: '0.2em', borderWidth: '2px', padding: '0.2rem 0.8rem' },
+};
 
 export default function NeonSign({
   text,
   color = 'pink',
-  size = 'md',
+  size = 'large',
   flicker = false,
-  bordered = false,
-  isNight = false,
-  className = '',
+  active = true,
+  theme,
 }) {
-  const colors = colorMap[color] || colorMap.pink
+  const isNight = theme === 'night';
+  const cfg = CONFIGS[color];
+  const sz = SIZES[size];
+
+  // In day mode signs are visible but muted — no glow
+  const textColor = isNight ? (active ? cfg.color : cfg.dimColor) : cfg.dimColor;
+  const textShadow = isNight && active ? cfg.glow : 'none';
+  const borderColor = isNight ? (active ? cfg.color : cfg.dimColor) : cfg.dimColor;
+  const boxShadow = isNight && active ? cfg.glow : 'none';
 
   return (
     <motion.div
-      className={`font-display inline-block ${sizeClasses[size]} ${className}`}
+      animate={
+        isNight && active && flicker
+          ? { opacity: [1, 1, 0.7, 1, 1, 0.85, 1] }
+          : { opacity: 1 }
+      }
+      transition={
+        flicker
+          ? { duration: 6, repeat: Infinity, times: [0, 0.88, 0.9, 0.92, 0.94, 0.96, 1] }
+          : {}
+      }
       style={{
-        color: colors.text,
-        textShadow: isNight ? colors.shadow : 'none',
-        ...(bordered && {
-          border: colors.border,
-          boxShadow: isNight ? colors.boxShadow : 'none',
-          borderRadius: '4px',
-        }),
+        fontFamily: "'Righteous', cursive",
+        fontSize: sz.fontSize,
+        letterSpacing: sz.letterSpacing,
+        textTransform: 'uppercase',
+        color: textColor,
+        textShadow,
+        border: `${sz.borderWidth} solid ${borderColor}`,
+        boxShadow,
+        borderRadius: '6px',
+        padding: sz.padding,
+        background: 'transparent',
+        userSelect: 'none',
+        whiteSpace: 'nowrap',
+        transition: 'color 0.4s ease, text-shadow 0.4s ease, box-shadow 0.4s ease',
       }}
-      variants={flickerVariants}
-      animate={flicker ? 'flicker' : 'on'}
     >
       {text}
     </motion.div>
-  )
+  );
 }

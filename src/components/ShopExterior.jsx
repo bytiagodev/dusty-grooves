@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import BigTony from './BigTony';
 import ThemeToggle from './ThemeToggle';
 
 export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
@@ -50,22 +49,6 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
           }}
         />
       )}
-
-      {/* Big Tony in the doorway */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.6, ease: 'easeOut' }}
-        style={{
-          position: 'absolute',
-          bottom: '8%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 10,
-        }}
-      >
-        <BigTony pose="welcome" theme={theme} size="exterior" />
-      </motion.div>
 
       {/* "Tap to enter" hint */}
       <motion.div

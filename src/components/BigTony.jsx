@@ -1,59 +1,73 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import SpeechBubble from './SpeechBubble';
 
-const POSES = {
-  welcome:   '/images/tony-welcome.png',
-  pointing:  '/images/tony-pointing.png',
-  vibing:    '/images/tony-vibing.png',
-  searching: '/images/tony-searching.png',
-  shrug:     '/images/tony-shrug.png',
-  error:     '/images/tony-error.png',
+const POSE_IMAGES = {
+  'tony-welcome':   '/images/tony-welcome.png',
+  'tony-pointing':  '/images/tony-pointing.png',
+  'tony-vibing':    '/images/tony-vibing.png',
+  'tony-searching': '/images/tony-searching.png',
+  'tony-shrug':     '/images/tony-shrug.png',
+  'tony-error':     '/images/tony-error.png',
 };
 
-const SIZES = {
-  exterior: { height: '700px' },
-  interior: { height: '700px' },
-  mobile:   { height: '220px' },
-};
-
-export default function BigTony({ pose = 'welcome', theme, size = 'interior' }) {
-  const isNight = theme === 'night';
-  const { height } = SIZES[size] || SIZES.interior;
-  const isVibing = pose === 'vibing';
+export default function BigTony({ pose, message, bob, showBubble, context }) {
+  const imageSrc = POSE_IMAGES[pose] || POSE_IMAGES['tony-welcome'];
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.img
-        key={pose}
-        src={POSES[pose]}
-        alt={`Big Tony — ${pose}`}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          // gentle bob when vibing
-          y: isVibing ? [0, -8, 0] : 0,
-        }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={
-          isVibing
-            ? {
-                opacity: { duration: 0.3 },
-                scale: { duration: 0.3 },
-                y: { duration: 1.8, repeat: Infinity, ease: 'easeInOut' },
-              }
-            : { duration: 0.3, ease: 'easeInOut' }
-        }
+    <div
+      style={{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {/* Speech bubble */}
+      {showBubble && message && (
+        <SpeechBubble message={message} />
+      )}
+
+      {/* Tony with crossfade between poses */}
+      <div
         style={{
-          height,
-          width: 'auto',
-          objectFit: 'contain',
-          filter: isNight
-            ? 'drop-shadow(0 0 18px rgba(255,0,110,0.4))'
-            : 'drop-shadow(2px 4px 12px rgba(0,0,0,0.25))',
-          userSelect: 'none',
-          pointerEvents: 'none',
+          position: 'relative',
+          height: context === 'exterior' ? '480px' : '520px',
+          width: '300px',
         }}
-      />
-    </AnimatePresence>
+      >
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={pose}
+            src={imageSrc}
+            alt="Big Tony"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: bob ? [0, -6, 0] : 0,
+            }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{
+              opacity: { duration: 0.4, ease: 'easeInOut' },
+              scale: { duration: 0.4, ease: 'easeOut' },
+              y: bob
+                ? { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+                : { duration: 0.3 },
+            }}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              height: '100%',
+              width: 'auto',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 0 20px rgba(255,0,110,0.15))',
+            }}
+            draggable={false}
+          />
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }
