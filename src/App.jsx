@@ -24,7 +24,7 @@ export default function App() {
   } = useAppState();
 
   return (
-    <div data-theme={theme} style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
+    <div data-theme={theme} style={{ width: '100vw', height: '100dvh', overflow: 'hidden' }}>
       <div className="crt-overlay" />
 
       <AnimatePresence mode="wait">

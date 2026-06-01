@@ -43,6 +43,7 @@
 
 html, body, #root {
   height: 100%;
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
 }
@@ -194,6 +195,39 @@ body {
 
 .tony-vibing {
   animation: tony-bob 1.2s ease-in-out infinite;
+}
+
+/* ── Big Tony container positioning ──
+   The interior background is panoramic (3:1). object-fit:cover means
+   the counter sits at ~46% from the bottom on EVERY screen size.
+   So Tony must stay the same proportional height everywhere.
+   
+   IMPORTANT: This element has Framer Motion (x: -30 → 0 entrance).
+   Framer Motion OVERRIDES CSS transform, so we CANNOT use
+   translateX(-50%) for centering. Instead: left:0 + right:0 spans
+   the full width, and flexbox (in inline styles) centers Tony.
+   Desktop: padding-right shifts him slightly left of center.
+   Mobile: no padding, true center. */
+.tony-container {
+  left: 0;
+  right: 0;
+  overflow: visible;
+  padding-right: 2%;
+}
+
+@media (max-width: 768px) {
+  .tony-container {
+    padding-right: 0;
+  }
+}
+
+/* ── Big Tony sprite ──
+   82dvh everywhere. The background scales the same on every viewport,
+   so shrinking Tony on mobile makes him look tiny against the counter.
+   dvh accounts for mobile browser chrome; vh is the fallback. */
+.tony-sprite {
+  height: 82vh;
+  height: 82dvh;
 }
 
 /* ============================================
