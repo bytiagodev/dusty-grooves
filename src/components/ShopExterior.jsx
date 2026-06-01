@@ -14,7 +14,7 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
       style={{
         position: 'relative',
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
         overflow: 'hidden',
         cursor: 'pointer',
       }}
