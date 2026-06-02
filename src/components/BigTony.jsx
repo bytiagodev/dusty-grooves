@@ -14,12 +14,25 @@ export default function BigTony({ pose, message, bob, showBubble }) {
   const imageSrc = POSE_IMAGES[pose] || POSE_IMAGES['tony-welcome'];
 
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="big-tony-wrapper">
 
-      {showBubble && message && (
-        <SpeechBubble message={message} />
-      )}
+      {/* Speech bubble — positioned above Tony's head */}
+      <AnimatePresence>
+        {showBubble && message && (
+          <motion.div
+            key="bubble"
+            className="tony-bubble-anchor"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.25 }}
+          >
+            <SpeechBubble message={message} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
+      {/* Tony sprite */}
       <AnimatePresence mode="wait">
         <motion.img
           key={pose}

@@ -14,7 +14,6 @@
   --wood-brown: #5C3D1A;
   --wood-light: #8B6914;
 
-  /* Theme tokens — DAY (default) */
   --bg-primary: #FFF5E1;
   --bg-secondary: #F5E6C8;
   --text-primary: #1a0a00;
@@ -56,7 +55,21 @@ body {
 }
 
 /* ============================================
-   CRT SCANLINES OVERLAY
+   FONT UTILITIES
+   ============================================ */
+.font-display  { font-family: 'Righteous', cursive; }
+.font-groovy   { font-family: 'Boogaloo', cursive; }
+.font-body     { font-family: 'Nunito', sans-serif; }
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: #FF006E; border-radius: 3px; }
+
+/* ============================================
+   CRT SCANLINES
    ============================================ */
 .crt-overlay {
   position: fixed;
@@ -76,19 +89,13 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 60%,
-    rgba(0, 0, 0, 0.25) 100%
-  );
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.25) 100%);
 }
 
 /* ============================================
-   VHS NOISE TEXTURE
+   VHS NOISE
    ============================================ */
-.vhs-noise {
-  position: relative;
-}
+.vhs-noise { position: relative; }
 
 .vhs-noise::before {
   content: '';
@@ -102,15 +109,10 @@ body {
 }
 
 /* ============================================
-   NEON GLOW UTILITIES — night only
+   NEON UTILITIES
    ============================================ */
-.neon-pink {
-  color: #FF006E;
-}
-
-.neon-cyan {
-  color: #00F5D4;
-}
+.neon-pink { color: #FF006E; }
+.neon-cyan { color: #00F5D4; }
 
 [data-theme="night"] .neon-pink {
   text-shadow:
@@ -147,7 +149,7 @@ body {
 }
 
 /* ============================================
-   NEON FLICKER ANIMATION
+   KEYFRAMES
    ============================================ */
 @keyframes neon-flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
@@ -159,54 +161,63 @@ body {
   90% { opacity: 0.85; }
 }
 
-.neon-flicker {
-  animation: neon-flicker 6s infinite;
-}
-
-.neon-flicker-subtle {
-  animation: neon-flicker-subtle 8s infinite;
-}
-
-/* ============================================
-   VINYL SPIN ANIMATION
-   ============================================ */
 @keyframes vinyl-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
-.vinyl-spinning {
-  animation: vinyl-spin 2s linear infinite;
-  animation-play-state: running;
-}
-
-.vinyl-paused {
-  animation: vinyl-spin 2s linear infinite;
-  animation-play-state: paused;
-}
-
-/* ============================================
-   BIG TONY BOB ANIMATION
-   ============================================ */
 @keyframes tony-bob {
   0%, 100% { transform: translateY(0px); }
   50%       { transform: translateY(-8px); }
 }
 
-.tony-vibing {
-  animation: tony-bob 1.2s ease-in-out infinite;
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px #FF006E, 0 0 10px #FF006E, 0 0 20px #FF006E;
+  }
+  50% {
+    box-shadow: 0 0 10px #FF006E, 0 0 25px #FF006E, 0 0 50px #FF006E;
+  }
 }
 
-/* ── Big Tony container positioning ──
-   The interior background is panoramic (3:1). object-fit:cover means
-   the counter sits at ~46% from the bottom on EVERY screen size.
-   So Tony must stay the same proportional height everywhere.
-   
-   IMPORTANT: This element has Framer Motion (x: -30 → 0 entrance).
-   Framer Motion OVERRIDES CSS transform, so we CANNOT use
-   translateX(-50%) for centering. Instead: left:0 + right:0 spans
-   the full width, and flexbox (in inline styles) centers Tony.
-   Desktop: padding-right shifts him slightly left of center.
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+@keyframes now-spinning-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+
+/* ============================================
+   ANIMATION CLASSES
+   ============================================ */
+.neon-flicker        { animation: neon-flicker 6s infinite; }
+.neon-flicker-subtle { animation: neon-flicker-subtle 8s infinite; }
+.glow-pulse          { animation: glow-pulse 2s ease-in-out infinite; }
+
+.vinyl-spinning {
+  animation: vinyl-spin 2s linear infinite;
+  animation-play-state: running;
+}
+.vinyl-paused {
+  animation: vinyl-spin 2s linear infinite;
+  animation-play-state: paused;
+}
+
+.tony-vibing { animation: tony-bob 1.2s ease-in-out infinite; }
+
+/* ============================================
+   BIG TONY
+   ============================================ */
+
+/* Full-width container; flexbox centers Tony.
+   Desktop: slight right padding shifts him left of center (away from search panel).
    Mobile: no padding, true center. */
 .tony-container {
   left: 0;
@@ -215,70 +226,333 @@ body {
   padding-right: 2%;
 }
 
-@media (max-width: 768px) {
-  .tony-container {
-    padding-right: 0;
-  }
+/* Wrapper holds both the bubble and the sprite in a column */
+.big-tony-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ── Big Tony sprite ──
-   82dvh everywhere. The background scales the same on every viewport,
-   so shrinking Tony on mobile makes him look tiny against the counter.
-   dvh accounts for mobile browser chrome; vh is the fallback. */
+/* Speech bubble sits above Tony's head, anchored to his center */
+.tony-bubble-anchor {
+  position: relative;
+  margin-bottom: 0.35rem;
+  /* Nudge bubble slightly left so the tail points toward Tony's face */
+  align-self: center;
+  transform: translateX(-10%);
+}
+
+/* 82dvh everywhere — background scales uniformly so Tony's
+   proportional height should stay constant across breakpoints. */
 .tony-sprite {
   height: 82vh;
   height: 82dvh;
 }
 
 /* ============================================
-   GLOW PULSE
+   NOW SPINNING GLOW
+   Positioned over the painted sign in the DALL-E background.
+   Adjust top/left in ShopInterior.jsx to align with your art.
    ============================================ */
-@keyframes glow-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 5px #FF006E,
-      0 0 10px #FF006E,
-      0 0 20px #FF006E;
-  }
-  50% {
-    box-shadow:
-      0 0 10px #FF006E,
-      0 0 25px #FF006E,
-      0 0 50px #FF006E;
-  }
-}
-
-.glow-pulse {
-  animation: glow-pulse 2s ease-in-out infinite;
+.now-spinning-glow {
+  width: 148px;
+  height: 38px;
+  border-radius: 4px;
+  background: rgba(0, 245, 212, 0.08);
+  box-shadow:
+    0 0 18px 6px rgba(0, 245, 212, 0.35),
+    0 0 40px 10px rgba(0, 245, 212, 0.15);
+  animation: now-spinning-pulse 2s ease-in-out infinite;
 }
 
 /* ============================================
-   FONT UTILITIES
+   SEARCH BAR
    ============================================ */
-.font-display {
-  font-family: 'Righteous', cursive;
+.search-bar-wrapper {
+  background: rgba(10, 0, 16, 0.82);
+  border: 1.5px solid rgba(255, 0, 110, 0.4);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem 0.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 12px rgba(255, 0, 110, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.font-groovy {
+.search-bar-wrapper[data-focused='true'] {
+  border-color: rgba(255, 0, 110, 0.75);
+  box-shadow:
+    0 0 20px rgba(255, 0, 110, 0.3),
+    0 0 6px rgba(255, 0, 110, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.search-label      { margin-bottom: 0.4rem; }
+.search-label-text {
+  font-family: 'Boogaloo', 'Righteous', cursive;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  color: #ff006e;
+  text-shadow: 0 0 8px rgba(255, 0, 110, 0.6);
+  user-select: none;
+}
+
+.search-row   { display: flex; align-items: center; gap: 0.4rem; }
+.search-icon  { flex-shrink: 0; color: rgba(255, 0, 110, 0.6); display: flex; align-items: center; }
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
   font-family: 'Boogaloo', cursive;
+  font-size: 1rem;
+  color: #fff5e1;
+  caret-color: #ff006e;
+  min-width: 0;
+}
+.search-input::placeholder { color: rgba(255, 245, 225, 0.3); font-style: italic; }
+.search-input:disabled     { opacity: 0.5; cursor: not-allowed; }
+
+.search-clear-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 245, 225, 0.4);
+  font-size: 0.7rem;
+  padding: 0.1rem 0.25rem;
+  transition: color 0.15s;
+}
+.search-clear-btn:hover { color: rgba(255, 0, 110, 0.8); }
+
+.search-submit-btn {
+  flex-shrink: 0;
+  background: rgba(255, 0, 110, 0.15);
+  border: 1px solid rgba(255, 0, 110, 0.4);
+  border-radius: 4px;
+  cursor: pointer;
+  color: #ff006e;
+  padding: 0.3rem 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, box-shadow 0.15s;
+  line-height: 0;
+}
+.search-submit-btn:hover:not(:disabled) {
+  background: rgba(255, 0, 110, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 110, 0.35);
+}
+.search-submit-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.search-spinner {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 0, 110, 0.3);
+  border-top-color: #ff006e;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
-.font-body {
-  font-family: 'Nunito', sans-serif;
+.search-groove {
+  height: 1px;
+  margin-top: 0.5rem;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.3) 30%, rgba(255, 0, 110, 0.3) 70%, transparent);
 }
 
 /* ============================================
-   SCROLLBAR STYLING
+   RESULTS PANEL
    ============================================ */
-::-webkit-scrollbar {
-  width: 6px;
+.results-panel {
+  background: rgba(10, 0, 16, 0.88);
+  border: 1.5px solid rgba(255, 0, 110, 0.3);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 0, 110, 0.1);
+  overflow: hidden;
+  max-height: clamp(200px, 55vh, 480px);
+  display: flex;
+  flex-direction: column;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+.results-header { padding: 0.5rem 0.75rem 0; flex-shrink: 0; }
+.results-count {
+  font-family: 'Boogaloo', cursive;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: rgba(255, 245, 225, 0.4);
+  text-transform: uppercase;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #FF006E;
+.results-groove {
+  height: 1px;
+  margin-top: 0.4rem;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.25) 40%, rgba(255, 0, 110, 0.25) 60%, transparent);
+}
+
+.results-list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.35rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 0, 110, 0.3) transparent;
+}
+.results-list::-webkit-scrollbar       { width: 3px; }
+.results-list::-webkit-scrollbar-track { background: transparent; }
+.results-list::-webkit-scrollbar-thumb { background: rgba(255, 0, 110, 0.35); border-radius: 2px; }
+
+/* ============================================
+   RECORD CARDS
+   ============================================ */
+.record-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  outline: none;
+  border-left: 2px solid transparent;
+}
+.record-card:hover,
+.record-card:focus-visible {
+  background: rgba(255, 0, 110, 0.08);
+  border-left-color: rgba(255, 0, 110, 0.4);
+}
+.record-card--selected {
+  background: rgba(255, 0, 110, 0.12);
+  border-left-color: #ff006e;
+}
+
+.record-card__art-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
   border-radius: 3px;
+  overflow: hidden;
+  background: rgba(61, 0, 102, 0.5);
+}
+.record-card__art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.2s;
+}
+
+.record-card__vinyl-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.record-card:hover .record-card__vinyl-overlay,
+.record-card--selected .record-card__vinyl-overlay { opacity: 1; }
+.record-card:hover .record-card__art,
+.record-card--selected .record-card__art           { opacity: 0.45; }
+
+.record-card__vinyl-svg { animation: vinyl-spin 2s linear infinite; }
+
+.record-card__info  { flex: 1; min-width: 0; }
+.record-card__track {
+  font-family: 'Boogaloo', cursive;
+  font-size: 0.92rem;
+  color: #fff5e1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+.record-card--selected .record-card__track {
+  color: #ff006e;
+  text-shadow: 0 0 8px rgba(255, 0, 110, 0.5);
+}
+.record-card__artist {
+  font-size: 0.75rem;
+  color: rgba(255, 245, 225, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.1rem;
+}
+.record-card__listeners {
+  font-size: 0.62rem;
+  color: rgba(0, 245, 212, 0.55);
+  margin-top: 0.15rem;
+}
+
+.record-card__play-indicator {
+  flex-shrink: 0;
+  color: rgba(255, 245, 225, 0.25);
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.record-card:hover .record-card__play-indicator,
+.record-card--selected .record-card__play-indicator { color: #ff006e; }
+
+.record-card__now-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff006e;
+  box-shadow: 0 0 6px #ff006e;
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+
+/* ============================================
+   SEARCH DOCK — bottom center, the main interaction
+   Results expand upward, search bar anchored at bottom.
+   ============================================ */
+.search-dock {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: clamp(320px, 52vw, 580px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .tony-container { padding-right: 0; }
+
+  .search-dock {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 0 0.75rem 0.75rem;
+    background: linear-gradient(to top, rgba(10, 0, 16, 0.75) 60%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .results-panel { max-height: 38vh; }
+
+  .tony-bubble-anchor {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .results-panel          { max-height: 32vh; }
+  .record-card__art-wrap  { width: 38px; height: 38px; }
+  .record-card__track     { font-size: 0.84rem; }
 }
