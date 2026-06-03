@@ -6,13 +6,13 @@ const API_KEY = import.meta.env.VITE_LASTFM_KEY;
 const PLACEHOLDER_ART = '/images/vinyl-default.svg';
 
 function getArtUrl(images) {
-  if (!images || !images.length) return PLACEHOLDER_ART;
+  if (!images || !images.length) return null;
   const priority = ['extralarge', 'large', 'mega', 'medium', 'small'];
   for (const size of priority) {
     const match = images.find((img) => img.size === size);
     if (match?.['#text'] && match['#text'] !== '') return match['#text'];
   }
-  return PLACEHOLDER_ART;
+  return null;
 }
 
 export default function useLastFm() {
@@ -56,7 +56,7 @@ export default function useLastFm() {
         artist: t.artist,
         mbid: t.mbid || null,
         url: t.url,
-        artUrl: getArtUrl(t.image),
+        artUrl: getArtUrl(t.image) || PLACEHOLDER_ART,
         listeners: t.listeners ? parseInt(t.listeners, 10) : null,
       }));
 
@@ -101,7 +101,7 @@ export default function useLastFm() {
         name: t.name,
         artist: t.artist?.name || artist,
         album: t.album?.title || null,
-        artUrl: getArtUrl(t.album?.image) || getArtUrl(t.image),
+        artUrl: getArtUrl(t.album?.image) || getArtUrl(t.image) || PLACEHOLDER_ART,
         duration: t.duration ? Math.round(parseInt(t.duration, 10) / 1000) : null,
         playcount: t.playcount ? parseInt(t.playcount, 10) : null,
         url: t.url,

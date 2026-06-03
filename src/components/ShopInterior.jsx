@@ -3,6 +3,7 @@ import BigTony from './BigTony';
 import ThemeToggle from './ThemeToggle';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
+import NowPlaying from './NowPlaying';
 
 export default function ShopInterior({
   theme,
@@ -20,6 +21,14 @@ export default function ShopInterior({
   onSearch,
   onSelectTrack,
   showResults,
+  /* NowPlaying props */
+  isPlaying,
+  currentTime,
+  duration,
+  volume,
+  onPlayPause,
+  onSeek,
+  onVolumeChange,
 }) {
   const isNight = theme === 'night';
 
@@ -82,9 +91,9 @@ export default function ShopInterior({
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
-      {/* ── Search dock — bottom center, the main interaction ── */}
+      {/* ── Search dock — bottom center ── */}
       <div className="search-dock">
-        {/* Results expand upward from the search bar */}
+        {/* Results expand upward */}
         <SearchResults
           results={searchResults}
           selectedTrack={selectedTrack}
@@ -92,6 +101,20 @@ export default function ShopInterior({
           onSelectTrack={onSelectTrack}
           isVisible={showResults}
         />
+
+        {/* Now playing — visible when a track is selected */}
+        <NowPlaying
+          track={selectedTrack}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          volume={volume}
+          onPlayPause={onPlayPause}
+          onSeek={onSeek}
+          onVolumeChange={onVolumeChange}
+        />
+
+        {/* Search bar — always at the bottom */}
         <SearchBar
           onSearch={onSearch}
           onFocus={onSearchFocus}
