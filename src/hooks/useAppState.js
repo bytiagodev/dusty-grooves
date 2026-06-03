@@ -176,7 +176,7 @@ export default function useAppState() {
     startPlaying: useCallback((trackName, artistName) => {
       const custom = trackName
         ? pickRandom([
-            `"${trackName}" — now that's a groove.`,
+            `"${trackName}" by ${artistName || 'this artist'}. Now that's a groove.`,
             `${artistName || 'This one'}. Classic, my friend.`,
             `You picked a good one. Let it ride.`,
           ])

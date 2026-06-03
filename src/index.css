@@ -405,6 +405,61 @@ body {
 .results-list::-webkit-scrollbar-track { background: transparent; }
 .results-list::-webkit-scrollbar-thumb { background: rgba(255, 0, 110, 0.35); border-radius: 2px; }
 
+/* ── Results panel: collapsible header ────────────────────────
+   Add these rules alongside your existing .results-* styles.
+   ─────────────────────────────────────────────────────────── */
+
+/* Turn the header into a full-width button */
+.results-header--btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;         /* match whatever padding your .results-header already has */
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+/* Push the chevron + hint to the far right */
+.results-header__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding-right: 4px;
+}
+
+/* Small hint label ("show" / "hide") */
+.results-toggle-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  font-family: var(--font-display, inherit);
+  color: var(--color-cyan, #00F5D4);
+}
+
+/* The animated chevron */
+.results-chevron {
+  color: var(--color-cyan, #00F5D4);
+  flex-shrink: 0;
+}
+
+/* Subtle hover/focus state on the header button */
+.results-header--btn:hover .results-toggle-hint,
+.results-header--btn:hover .results-chevron {
+  opacity: 1;
+}
+
+.results-header--btn:focus-visible {
+  outline: 2px solid var(--color-cyan, #00F5D4);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* ============================================
    RECORD CARDS
    ============================================ */
