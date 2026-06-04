@@ -1,13 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import SpeechBubble from './SpeechBubble';
+import { asset } from '../utils/assetPath';
 
 const POSE_IMAGES = {
-  'tony-welcome':   '/images/tony-welcome.png',
-  'tony-pointing':  '/images/tony-pointing.png',
-  'tony-vibing':    '/images/tony-vibing.png',
-  'tony-searching': '/images/tony-searching.png',
-  'tony-shrug':     '/images/tony-shrug.png',
-  'tony-error':     '/images/tony-error.png',
+  'tony-welcome':   asset('/images/tony-welcome.png'),
+  'tony-pointing':  asset('/images/tony-pointing.png'),
+  'tony-vibing':    asset('/images/tony-vibing.png'),
+  'tony-searching': asset('/images/tony-searching.png'),
+  'tony-shrug':     asset('/images/tony-shrug.png'),
+  'tony-error':     asset('/images/tony-error.png'),
 };
 
 export default function BigTony({ pose, message, bob, showBubble }) {

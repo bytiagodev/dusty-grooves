@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import { asset } from '../utils/assetPath';
 
 export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
   const isNight = theme === "night";
@@ -26,7 +27,7 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
           key={theme}
           src={
             isNight
-              ? "/images/shop-exterior-night.webp"
+              ? asset("/images/shop-exterior-night.webp")
               : "/images/shop-exterior-day.webp"
           }
           alt={

@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle';
 import SearchBar from './SearchBar';
 import SearchResults from './SearchResults';
 import NowPlaying from './NowPlaying';
+import { asset } from '../utils/assetPath';
 
 export default function ShopInterior({
   theme,
@@ -48,7 +49,7 @@ export default function ShopInterior({
     >
       {/* ── Background ── */}
       <img
-        src="/images/shop-interior.webp"
+        src={asset('/images/shop-interior.webp')}
         alt="Inside Dusty Grooves"
         style={{
           position: 'absolute',

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { asset } from '../utils/assetPath';
 
 // ── NowPlaying ────────────────────────────────────────────────
 // Displays the currently playing track with album art, song
@@ -40,7 +41,7 @@ export default function NowPlaying({
           src={track.artUrl || '/images/vinyl-default.svg'}
           alt={`${track.album || track.name} cover`}
           className="now-playing__art"
-          onError={(e) => { e.currentTarget.src = '/images/vinyl-default.svg'; }}
+          onError={(e) => { e.currentTarget.src = asset('/images/vinyl-default.svg'); }}
           draggable={false}
         />
         {isPlaying && <div className="now-playing__art-pulse" />}
