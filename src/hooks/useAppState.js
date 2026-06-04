@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from "react";
 
 // ── Tony's dialogue pools ──────────────────────────────────────
 // Random pick keeps him feeling alive across repeated interactions.
@@ -55,13 +55,13 @@ function pickRandom(arr) {
 // so BigTony.jsx can resolve it however it wants).
 
 const POSE_MAP = {
-  welcome:    'tony-welcome',
-  searching:  'tony-pointing',
-  loading:    'tony-searching',
-  playing:    'tony-vibing',
-  paused:     'tony-vibing',
-  no_results: 'tony-shrug',
-  error:      'tony-error',
+  welcome: "tony-welcome",
+  searching: "tony-pointing",
+  loading: "tony-searching",
+  playing: "tony-vibing",
+  paused: "tony-vibing",
+  no_results: "tony-shrug",
+  error: "tony-error",
 };
 
 // ── Minimum dwell times (ms) ───────────────────────────────────
@@ -69,19 +69,19 @@ const POSE_MAP = {
 // Prevents flickering through poses faster than the eye registers.
 
 const MIN_DWELL = {
-  welcome:    0,       // can leave immediately on user action
-  searching:  600,     // brief — user is actively typing/interacting
-  loading:    1200,    // crate-digging animation needs to land
-  playing:    0,       // stays as long as music plays
-  paused:     0,       // stays until user acts
-  no_results: 2000,    // let the user read the message
-  error:      2000,    // let the user read the message
+  welcome: 0, // can leave immediately on user action
+  searching: 600, // brief — user is actively typing/interacting
+  loading: 1200, // crate-digging animation needs to land
+  playing: 0, // stays as long as music plays
+  paused: 0, // stays until user acts
+  no_results: 2000, // let the user read the message
+  error: 2000, // let the user read the message
 };
 
 // ── The hook ───────────────────────────────────────────────────
 
 export default function useAppState() {
-  const [state, setState] = useState('welcome');
+  const [state, setState] = useState("welcome");
   const [message, setMessage] = useState(() => pickRandom(MESSAGES.welcome));
 
   // Track when we entered the current state (for dwell enforcement)
@@ -99,34 +99,40 @@ export default function useAppState() {
   }, []);
 
   // ── Core transition logic ──────────────────────────────────
-  const transitionTo = useCallback((nextState, customMessage) => {
-    // Clear any previously queued transition
-    if (dwellTimer.current) {
-      clearTimeout(dwellTimer.current);
-      dwellTimer.current = null;
-    }
+  const transitionTo = useCallback(
+    (nextState, customMessage) => {
+      // Clear any previously queued transition
+      if (dwellTimer.current) {
+        clearTimeout(dwellTimer.current);
+        dwellTimer.current = null;
+      }
 
-    const now = Date.now();
-    const elapsed = now - enteredAt.current;
-    const minDwell = MIN_DWELL[state] || 0;
-    const remaining = minDwell - elapsed;
+      const now = Date.now();
+      const elapsed = now - enteredAt.current;
+      const minDwell = MIN_DWELL[state] || 0;
+      const remaining = minDwell - elapsed;
 
-    const doTransition = () => {
-      const msg = customMessage || pickRandom(MESSAGES[nextState] || []);
-      setState(nextState);
-      setMessage(msg);
-      enteredAt.current = Date.now();
-      pendingTransition.current = null;
-    };
+      const doTransition = () => {
+        const msg =
+          typeof customMessage === "function"
+            ? customMessage()
+            : customMessage || pickRandom(MESSAGES[nextState] || []);
+        setState(nextState);
+        setMessage(msg);
+        enteredAt.current = Date.now();
+        pendingTransition.current = null;
+      };
 
-    if (remaining > 0) {
-      // Dwell time hasn't elapsed — queue the transition
-      pendingTransition.current = nextState;
-      dwellTimer.current = setTimeout(doTransition, remaining);
-    } else {
-      doTransition();
-    }
-  }, [state]);
+      if (remaining > 0) {
+        // Dwell time hasn't elapsed — queue the transition
+        pendingTransition.current = nextState;
+        dwellTimer.current = setTimeout(doTransition, remaining);
+      } else {
+        doTransition();
+      }
+    },
+    [state],
+  );
 
   // ── Public actions ─────────────────────────────────────────
   // These are what the rest of the app calls. Each one triggers
@@ -135,86 +141,110 @@ export default function useAppState() {
   const actions = {
     // User enters the shop from exterior
     enterShop: useCallback(() => {
-      transitionTo('welcome');
+      transitionTo("welcome");
     }, [transitionTo]),
 
     // User starts typing in the search bar
     startSearch: useCallback(() => {
       // Only transition if we're not already searching/loading
-      if (state !== 'searching' && state !== 'loading') {
-        transitionTo('searching');
+      if (state !== "searching" && state !== "loading") {
+        transitionTo("searching");
       }
     }, [state, transitionTo]),
 
     // Search has been submitted, waiting for API
     submitSearch: useCallback(() => {
-      transitionTo('loading');
+      transitionTo("loading");
     }, [transitionTo]),
 
     // Results came back successfully
     showResults: useCallback(() => {
       // Back to pointing — "here's what I found"
-      transitionTo('searching', pickRandom([
-        "Here's what I've got, my friend.",
-        "Take your pick. They're all good.",
-        "Found some beauties in the crates.",
-        "Have a look through these.",
-      ]));
+      transitionTo(
+        "searching",
+        pickRandom([
+          "Here's what I've got, my friend.",
+          "Take your pick. They're all good.",
+          "Found some beauties in the crates.",
+          "Have a look through these.",
+        ]),
+      );
     }, [transitionTo]),
 
     // No results found
     noResults: useCallback(() => {
-      transitionTo('no_results');
+      transitionTo("no_results");
     }, [transitionTo]),
 
     // User selected a track, audio is loading
-    selectTrack: useCallback((trackName) => {
-      transitionTo('loading', `Putting on "${trackName}"...`);
-    }, [transitionTo]),
+    selectTrack: useCallback(
+      (trackName) => {
+        transitionTo(
+          "loading",
+          trackName ? () => `Putting on "${trackName}"...` : undefined,
+        );
+      },
+      [transitionTo],
+    ),
 
     // Audio has started playing
-    startPlaying: useCallback((trackName, artistName) => {
-      const custom = trackName
-        ? pickRandom([
-            `"${trackName}" by ${artistName || 'this artist'}. Now that's a groove.`,
-            `${artistName || 'This one'}. Classic, my friend.`,
-            `You picked a good one. Let it ride.`,
-          ])
-        : undefined;
-      transitionTo('playing', custom);
-    }, [transitionTo]),
+    startPlaying: useCallback(
+      (trackName, artistName) => {
+        transitionTo(
+          "playing",
+          trackName
+            ? () =>
+                pickRandom([
+                  `"${trackName}" by ${artistName || "this artist"}. Now that's a groove.`,
+                  `${artistName || "This one"}. Classic, my friend.`,
+                  `You picked a good one. Let it ride.`,
+                ])
+            : undefined,
+        );
+      },
+      [transitionTo],
+    ),
 
     // User paused playback
     pausePlayback: useCallback(() => {
-      transitionTo('paused');
+      transitionTo("paused");
     }, [transitionTo]),
 
     // User resumed playback
     resumePlayback: useCallback(() => {
-      transitionTo('playing', pickRandom([
-        "And we're back. Let it play.",
-        "That's right, keep it spinning.",
-        "The groove continues, my friend.",
-      ]));
+      transitionTo(
+        "playing",
+        pickRandom([
+          "And we're back. Let it play.",
+          "That's right, keep it spinning.",
+          "The groove continues, my friend.",
+        ]),
+      );
     }, [transitionTo]),
 
     // Song ended naturally
     songEnded: useCallback(() => {
-      transitionTo('welcome', pickRandom([
-        "That was a good one. What's next, my friend?",
-        "Record's done. Want to dig for another?",
-        "The turntable's ready when you are.",
-      ]));
+      transitionTo(
+        "welcome",
+        pickRandom([
+          "That was a good one. What's next, my friend?",
+          "Record's done. Want to dig for another?",
+          "The turntable's ready when you are.",
+        ]),
+      );
     }, [transitionTo]),
 
     // Something broke
-    setError: useCallback((errorMsg) => {
-      transitionTo('error', errorMsg || undefined);
-    }, [transitionTo]),
+    setError: useCallback(
+      (errorMsg) => {
+        transitionTo("error", errorMsg || undefined);
+      },
+      [transitionTo],
+    ),
 
     // Reset to welcome (after error, or manual reset)
     reset: useCallback(() => {
-      transitionTo('welcome');
+      transitionTo("welcome");
     }, [transitionTo]),
   };
 
@@ -225,20 +255,25 @@ export default function useAppState() {
     appState: state,
 
     // Which Tony pose to display
-    tonyPose: POSE_MAP[state] || 'tony-welcome',
+    tonyPose: POSE_MAP[state] || "tony-welcome",
 
     // Current speech bubble message (null-check in SpeechBubble)
     tonyMessage: message,
 
     // Whether Tony should bob (only when actively playing)
-    tonyBob: state === 'playing',
+    tonyBob: state === "playing",
 
     // Whether the "NOW SPINNING" sign should be lit
-    nowSpinning: state === 'playing' || state === 'paused',
+    nowSpinning: state === "playing" || state === "paused",
 
     // Whether speech bubble should be visible
-    showBubble: state === 'welcome' || state === 'no_results' || state === 'error'
-      || state === 'loading' || state === 'playing' || state === 'paused',
+    showBubble:
+      state === "welcome" ||
+      state === "no_results" ||
+      state === "error" ||
+      state === "loading" ||
+      state === "playing" ||
+      state === "paused",
 
     // Action dispatchers
     actions,
