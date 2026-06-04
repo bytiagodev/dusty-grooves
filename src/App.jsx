@@ -1,17 +1,17 @@
-import { useState, useCallback, useRef } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import ShopExterior from './components/ShopExterior';
-import ShopInterior from './components/ShopInterior';
-import AudioEngine from './components/AudioEngine';
-import useAppState from './hooks/useAppState';
-import useLastFm from './hooks/useLastFm';
-import usePiped from './hooks/usePiped';
-import './index.css';
+import { useState, useCallback, useRef, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
+import ShopExterior from "./components/ShopExterior";
+import ShopInterior from "./components/ShopInterior";
+import AudioEngine from "./components/AudioEngine";
+import useAppState from "./hooks/useAppState";
+import useLastFm from "./hooks/useLastFm";
+import usePiped from "./hooks/usePiped";
+import "./index.css";
 
 export default function App() {
-  const [scene, setScene] = useState('exterior');
+  const [scene, setScene] = useState("exterior");
   const [theme, setTheme] = useState(
-    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day",
   );
   const [showResults, setShowResults] = useState(false);
 
@@ -23,17 +23,26 @@ export default function App() {
 
   const audioRef = useRef(null);
 
-  const toggleTheme = () => setTheme((t) => (t === 'day' ? 'night' : 'day'));
+  const toggleTheme = () => setTheme((t) => (t === "day" ? "night" : "day"));
 
   // ── Hooks ───────────────────────────────────────────────────
-  const { tonyPose, tonyMessage, tonyBob, nowSpinning, showBubble, actions } = useAppState();
-  const { results, selectedTrack, isSearching, isFetchingTrack, searchTracks, fetchTrackInfo } = useLastFm();
-  const { videoId, streamMeta, isLoadingStream, searchStream, clearStream } = usePiped();
+  const { tonyPose, tonyMessage, tonyBob, nowSpinning, showBubble, actions } =
+    useAppState();
+  const {
+    results,
+    selectedTrack,
+    isSearching,
+    isFetchingTrack,
+    searchTracks,
+    fetchTrackInfo,
+  } = useLastFm();
+  const { videoId, streamMeta, isLoadingStream, searchStream, clearStream } =
+    usePiped();
 
   // ── Enter the shop ──────────────────────────────────────────
 
   const handleEnterShop = useCallback(() => {
-    setScene('interior');
+    setScene("interior");
     actions.reset();
   }, [actions]);
 
@@ -43,54 +52,60 @@ export default function App() {
     actions.startSearch();
   }, [actions]);
 
-  const handleSearch = useCallback(async (query) => {
-    setShowResults(false);
-    actions.submitSearch();
+  const handleSearch = useCallback(
+    async (query) => {
+      setShowResults(false);
+      actions.submitSearch();
 
-    const outcome = await searchTracks(query);
+      const outcome = await searchTracks(query);
 
-    if (outcome?.found) {
-      actions.showResults();
-      setShowResults(true);
-    } else {
-      actions.noResults();
-    }
-  }, [actions, searchTracks]);
+      if (outcome?.found) {
+        actions.showResults();
+        setShowResults(true);
+      } else {
+        actions.noResults();
+      }
+    },
+    [actions, searchTracks],
+  );
 
   // ── Track selection: Last.fm metadata → Piped audio ─────────
 
-  const handleSelectTrack = useCallback(async (track) => {
-    // Stop current playback
-    audioRef.current?.pause();
-    clearStream();
+  const handleSelectTrack = useCallback(
+    async (track) => {
+      // Stop current playback
+      audioRef.current?.pause();
+      clearStream();
 
-    actions.selectTrack(track.name);
+      actions.selectTrack(track.name);
 
-    // Step 1: Get full track info from Last.fm
-    const fullTrack = await fetchTrackInfo({
-      name: track.name,
-      artist: track.artist,
-      mbid: track.mbid,
-    });
+      // Step 1: Get full track info from Last.fm
+      const fullTrack = await fetchTrackInfo({
+        name: track.name,
+        artist: track.artist,
+        mbid: track.mbid,
+      });
 
-    if (!fullTrack) {
-      actions.setError('Could not load track info');
-      return;
-    }
+      if (!fullTrack) {
+        actions.setError("Could not load track info");
+        return;
+      }
 
-    // Step 2: Find audio stream via Piped
-    const stream = await searchStream(
-      fullTrack.name,
-      fullTrack.artist,
-      fullTrack.duration  // duration in seconds from Last.fm, if available
-    );
+      // Step 2: Find audio stream via Piped
+      const stream = await searchStream(
+        fullTrack.name,
+        fullTrack.artist,
+        fullTrack.duration, // duration in seconds from Last.fm, if available
+      );
 
-    if (stream?.streamUrl) {
-      // AudioEngine will auto-play; onPlay callback triggers actions.startPlaying
-    } else {
-      actions.setError('Could not find audio for this track');
-    }
-  }, [actions, fetchTrackInfo, searchStream, clearStream]);
+      if (stream?.streamUrl) {
+        // AudioEngine will auto-play; onPlay callback triggers actions.startPlaying
+      } else {
+        actions.setError("Could not find audio for this track");
+      }
+    },
+    [actions, fetchTrackInfo, searchStream, clearStream],
+  );
 
   // ── Playback controls ───────────────────────────────────────
 
@@ -114,12 +129,18 @@ export default function App() {
 
   // ── AudioEngine callbacks ───────────────────────────────────
 
+  const selectedTrackRef = useRef(null);
+  useEffect(() => {
+    selectedTrackRef.current = selectedTrack;
+  }, [selectedTrack]);
+
   const handleAudioPlay = useCallback(() => {
     setIsPlaying(true);
-    if (selectedTrack) {
-      actions.startPlaying(selectedTrack.name, selectedTrack.artist);
+    const track = selectedTrackRef.current;
+    if (track) {
+      actions.startPlaying(track.name, track.artist);
     }
-  }, [actions, selectedTrack]);
+  }, [actions]);
 
   const handleAudioPause = useCallback(() => {
     setIsPlaying(false);
@@ -145,39 +166,47 @@ export default function App() {
   // If YouTube refuses to play a video (embedding disabled, etc),
   // try searching for an alternative version of the same track.
 
-  const handleAudioError = useCallback(async ({ message, isRecoverable }) => {
-    if (isRecoverable && selectedTrack) {
-      const result = await searchStream(
-        selectedTrack.name,
-        selectedTrack.artist,
-        selectedTrack.duration
-      );
+  const handleAudioError = useCallback(
+    async ({ message, isRecoverable }) => {
+      if (isRecoverable && selectedTrack) {
+        const result = await searchStream(
+          selectedTrack.name,
+          selectedTrack.artist,
+          selectedTrack.duration,
+        );
 
-      if (result?.videoId) {
-        // New videoId set via usePiped → AudioEngine loads new video
-        return;
+        if (result?.videoId) {
+          // New videoId set via usePiped → AudioEngine loads new video
+          return;
+        }
       }
-    }
 
-    setIsPlaying(false);
-    actions.setError(message);
-  }, [actions, selectedTrack, searchStream]);
+      setIsPlaying(false);
+      actions.setError(message);
+    },
+    [actions, selectedTrack, searchStream],
+  );
 
   // ── Merge album art: Last.fm → YouTube thumbnail fallback ───
-  const PLACEHOLDER = '/images/vinyl-default.svg';
-  const displayTrack = selectedTrack && streamMeta?.artUrl
-    ? {
-        ...selectedTrack,
-        artUrl: (!selectedTrack.artUrl || selectedTrack.artUrl === PLACEHOLDER)
-          ? streamMeta.artUrl
-          : selectedTrack.artUrl,
-      }
-    : selectedTrack;
+  const PLACEHOLDER = "/images/vinyl-default.svg";
+  const displayTrack =
+    selectedTrack && streamMeta?.artUrl
+      ? {
+          ...selectedTrack,
+          artUrl:
+            !selectedTrack.artUrl || selectedTrack.artUrl === PLACEHOLDER
+              ? streamMeta.artUrl
+              : selectedTrack.artUrl,
+        }
+      : selectedTrack;
 
   // ── Render ──────────────────────────────────────────────────
 
   return (
-    <div data-theme={theme} style={{ width: '100vw', height: '100dvh', overflow: 'hidden' }}>
+    <div
+      data-theme={theme}
+      style={{ width: "100vw", height: "100dvh", overflow: "hidden" }}
+    >
       <div className="crt-overlay" />
 
       {/* AudioEngine lives outside the AnimatePresence so it
@@ -196,7 +225,7 @@ export default function App() {
       />
 
       <AnimatePresence mode="wait">
-        {scene === 'exterior' ? (
+        {scene === "exterior" ? (
           <ShopExterior
             key="exterior"
             theme={theme}
