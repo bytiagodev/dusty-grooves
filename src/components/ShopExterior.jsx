@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
 export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
@@ -9,8 +9,8 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
       className="shop-exterior"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.08 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      exit={{ opacity: 0, scale: 1.06 }}
+      transition={{ duration: 0.45, ease: "easeInOut" }}
       style={{
         position: "relative",
         width: "100vw",
@@ -20,41 +20,51 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
       }}
       onClick={onEnter}
     >
-      {/* Background image — day or night */}
-      <motion.img
-        key={theme}
-        src={
-          isNight
-            ? "/images/shop-exterior-night.webp"
-            : "/images/shop-exterior-day.webp"
-        }
-        alt={
-          isNight ? "Dusty Grooves at night" : "Dusty Grooves in the daytime"
-        }
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "center bottom",
-        }}
-      />
-
-      {/* Night overlay — deepens the darkness slightly */}
-      {isNight && (
-        <div
+      {/* Background image — crossfades between day and night */}
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={theme}
+          src={
+            isNight
+              ? "/images/shop-exterior-night.webp"
+              : "/images/shop-exterior-day.webp"
+          }
+          alt={
+            isNight ? "Dusty Grooves at night" : "Dusty Grooves in the daytime"
+          }
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(10, 0, 16, 0.35)",
-            pointerEvents: "none",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center bottom",
           }}
         />
-      )}
+      </AnimatePresence>
+
+      {/* Night overlay — deepens the darkness slightly */}
+      <AnimatePresence>
+        {isNight && (
+          <motion.div
+            key="night-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(10, 0, 16, 0.35)",
+              pointerEvents: "none",
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* "Tap to enter" hint */}
       <motion.div

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import BigTony from './BigTony';
 import ThemeToggle from './ThemeToggle';
 import SearchBar from './SearchBar';
@@ -12,7 +12,6 @@ export default function ShopInterior({
   tonyMessage,
   tonyBob,
   showBubble,
-  nowSpinning,
   searchResults,
   selectedTrack,
   isSearching,
@@ -31,6 +30,7 @@ export default function ShopInterior({
   onVolumeChange,
 }) {
   const isNight = theme === 'night';
+  const hasResults = showResults && searchResults?.length > 0;
 
   return (
     <motion.div
@@ -38,7 +38,7 @@ export default function ShopInterior({
       initial={{ opacity: 0, scale: 1.04 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.7, ease: 'easeOut' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       style={{
         position: 'relative',
         width: '100vw',
@@ -71,21 +71,6 @@ export default function ShopInterior({
         }} />
       )}
 
-      {/* ── NOW SPINNING glow ── */}
-      {nowSpinning && (
-        <div
-          className="now-spinning-glow"
-          style={{
-            position: 'absolute',
-            top: '13.5%',
-            left: '49.5%',
-            transform: 'translateX(-50%)',
-            pointerEvents: 'none',
-            zIndex: 5,
-          }}
-        />
-      )}
-
       {/* ── Theme toggle — top right, consistent with exterior ── */}
       <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', zIndex: 20 }}>
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
@@ -93,26 +78,35 @@ export default function ShopInterior({
 
       {/* ── Search dock — bottom center ── */}
       <div className="search-dock">
-        {/* Results expand upward */}
-        <SearchResults
-          results={searchResults}
-          selectedTrack={selectedTrack}
-          isFetchingTrack={isFetchingTrack}
-          onSelectTrack={onSelectTrack}
-          isVisible={showResults}
-        />
+        {/* Results — AnimatePresence here so exit works */}
+        <AnimatePresence>
+          {hasResults && (
+            <SearchResults
+              key="results"
+              results={searchResults}
+              selectedTrack={selectedTrack}
+              isFetchingTrack={isFetchingTrack}
+              onSelectTrack={onSelectTrack}
+            />
+          )}
+        </AnimatePresence>
 
-        {/* Now playing — visible when a track is selected */}
-        <NowPlaying
-          track={selectedTrack}
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={duration}
-          volume={volume}
-          onPlayPause={onPlayPause}
-          onSeek={onSeek}
-          onVolumeChange={onVolumeChange}
-        />
+        {/* Now playing — AnimatePresence here so exit works */}
+        <AnimatePresence>
+          {selectedTrack && (
+            <NowPlaying
+              key="now-playing"
+              track={selectedTrack}
+              isPlaying={isPlaying}
+              currentTime={currentTime}
+              duration={duration}
+              volume={volume}
+              onPlayPause={onPlayPause}
+              onSeek={onSeek}
+              onVolumeChange={onVolumeChange}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Search bar — always at the bottom */}
         <SearchBar

@@ -139,11 +139,6 @@ export default function useAppState() {
   // the right state transition with appropriate context.
 
   const actions = {
-    // User enters the shop from exterior
-    enterShop: useCallback(() => {
-      transitionTo("welcome");
-    }, [transitionTo]),
-
     // User starts typing in the search bar
     startSearch: useCallback(() => {
       // Only transition if we're not already searching/loading
@@ -263,12 +258,10 @@ export default function useAppState() {
     // Whether Tony should bob (only when actively playing)
     tonyBob: state === "playing",
 
-    // Whether the "NOW SPINNING" sign should be lit
-    nowSpinning: state === "playing" || state === "paused",
-
     // Whether speech bubble should be visible
     showBubble:
       state === "welcome" ||
+      state === "searching" ||
       state === "no_results" ||
       state === "error" ||
       state === "loading" ||

@@ -26,7 +26,7 @@ export default function App() {
   const toggleTheme = () => setTheme((t) => (t === "day" ? "night" : "day"));
 
   // ── Hooks ───────────────────────────────────────────────────
-  const { tonyPose, tonyMessage, tonyBob, nowSpinning, showBubble, actions } =
+  const { tonyPose, tonyMessage, tonyBob, showBubble, actions } =
     useAppState();
   const {
     results,
@@ -241,7 +241,6 @@ export default function App() {
             tonyMessage={tonyMessage}
             tonyBob={tonyBob}
             showBubble={showBubble}
-            nowSpinning={nowSpinning}
             searchResults={results}
             selectedTrack={displayTrack}
             isSearching={isSearching}
