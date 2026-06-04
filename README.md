@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night - neon sign glowing on a quiet street" width="100%" />
+  <img src="public/images/tony-at-the-shop.webp" alt="Big Tony outside Dusty Grooves at night" width="100%" />
 </p>
 
 <h1 align="center">🎵 Dusty Grooves</h1>
@@ -57,7 +57,7 @@ No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
 
 ```
 You open the app
-    ♫  The shopfront. Day or night. Big Tony at the door.
+    ♫  The shopfront. Day or night. Big Tony outside.
 
 You tap to enter
     ♫  You're inside. Wood panels, neon signs, crates of vinyl everywhere.
@@ -113,12 +113,31 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 | **The style** | Tailwind CSS with a custom 80s palette - hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
 | **The movement** | Framer Motion for pose transitions and page animations. CSS keyframes for the ambient stuff - neon flicker, CRT scanlines, vinyl spin, idle bob |
 | **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
-| **The sound** | Piped API - audio-only streams, no video data. Keeps it light on mobile data |
-| **The playback** | Plain HTML5 `<audio>` element. No libraries, no bloat |
+| **The sound** | YouTube via Invidious search - finds the best match for any track, streams through the YouTube IFrame Player |
+| **The proxy** | Cloudflare Worker - proxies Invidious requests, handles CORS and instance failover. Free tier: 100K req/day |
+| **The playback** | YouTube IFrame Player API, hidden at 240p to keep data usage low |
 | **Big Tony & the shop** | Dreamed up in the neon dream machine. Six character poses, three shop environments |
 | **The home** | GitHub Pages. Free |
 
 **Total cost: $0**
+
+---
+
+## 🎵 How the Audio Works
+
+```
+User searches → Last.fm (track.search) → results + album art
+                      ↓
+User picks track → Last.fm (track.getInfo) → full metadata
+                      ↓
+               Cloudflare Worker → Invidious → YouTube video ID
+                      ↓
+               YouTube IFrame Player API → playback
+```
+
+The Cloudflare Worker proxies requests across 8 Invidious instances with automatic failover. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
+
+Album art comes from Last.fm first, with YouTube thumbnails as fallback.
 
 ---
 
@@ -150,8 +169,11 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 
 ```
 dusty-grooves/
+├── worker/
+│   ├── index.js               <- Cloudflare Worker: Invidious proxy + CORS + failover
+│   └── wrangler.toml          <- Worker deploy config
 ├── public/
-│   └── images/               <- Big Tony (6 poses), shop (3 scenes), vinyl SVG
+│   └── images/                <- Big Tony (6 poses), shop (3 scenes), vinyl SVG
 ├── src/
 │   ├── components/
 │   │   ├── ShopExterior       <- The landing - day or night
@@ -161,21 +183,20 @@ dusty-grooves/
 │   │   ├── VinylPlayer        <- SVG vinyl on the turntable, spins when playing
 │   │   ├── SearchBar          <- Find your song
 │   │   ├── SearchResults      <- Records as cards with cover art
-│   │   ├── NowPlaying         <- What's on the turntable
-│   │   ├── AudioEngine        <- Piped streams + HTML5 audio
-│   │   ├── NeonSign           <- Reusable glowing neon component
+│   │   ├── NowPlaying         <- Track info, seek bar, playback controls
+│   │   ├── AudioEngine        <- YouTube IFrame Player (hidden, 240p)
+│   │   ├── NeonSign           <- Kept for future use, not actively rendered
 │   │   └── ThemeToggle        <- Day/night switch
 │   ├── hooks/
 │   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── usePiped           <- Piped search + audio streams
+│   │   ├── usePiped           <- Invidious search via Worker, returns videoId
 │   │   ├── useAppState        <- The state machine driving Big Tony
 │   │   └── useTheme           <- Day/night mode logic
 │   ├── utils/
-│   │   └── pipedInstances     <- Fallback instance list
-│   └── styles/
-│       └── globals.css        <- CRT scanlines, neon keyframes, VHS noise
-├── .env                       <- Your Last.fm API key (never commit this)
-├── .env.example               <- Template for the API key
+│   │   └── pipedInstances     <- API client for the Cloudflare Worker
+│   └── index.css              <- CRT scanlines, neon keyframes, VHS noise
+├── .env                       <- VITE_LASTFM_KEY + VITE_API_URL (never commit this)
+├── .env.example               <- Template for both keys
 └── tailwind.config.js         <- The 80s theme lives here
 ```
 
@@ -200,19 +221,32 @@ npm install
 
 Head to [last.fm/api/account/create](https://www.last.fm/api/account/create), create a free account, and grab your API key.
 
-**4. Set up the environment**
+**4. Deploy the Cloudflare Worker**
+
+The Worker proxies Invidious API calls and handles CORS. You'll need a free [Cloudflare account](https://cloudflare.com).
+
+```bash
+cd worker
+npx wrangler login
+npx wrangler deploy
+```
+
+Copy the Worker URL it gives you (e.g. `https://dusty-grooves-api.<subdomain>.workers.dev`).
+
+**5. Set up the environment**
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and paste your key:
+Open `.env` and fill in both keys:
 
 ```
-VITE_LASTFM_KEY=your_api_key_here
+VITE_LASTFM_KEY=your_lastfm_api_key
+VITE_API_URL=https://dusty-grooves-api.<subdomain>.workers.dev
 ```
 
-**5. Open the shop**
+**6. Open the shop**
 
 ```bash
 npm run dev
@@ -233,7 +267,8 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 - **Concept, design, and build** - [bytiagodev](https://github.com/bytiagodev)
 - **Big Tony and all shop visuals** - dreamed up in the neon dream machine
 - **Music metadata and artwork** - [Last.fm API](https://www.last.fm/api)
-- **Audio streams** - [Piped](https://github.com/TeamPiped/Piped)
+- **Audio streams** - [YouTube](https://youtube.com) via [Invidious](https://invidious.io)
+- **API proxy** - [Cloudflare Workers](https://workers.cloudflare.com)
 - **Fonts** - [Google Fonts](https://fonts.google.com/)
 - **Inspiration** - every record shop that refused to close, every DJ who never stopped spinning, and the decade that gave us the best music on earth
 
