@@ -275,7 +275,7 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 ---
 
 <p align="center">
-  <img src="public/images/shop-interior.webp" alt="Inside Dusty Grooves" width="100%" />
+  <img src="public/images/tony-shop-interior.webp" alt="Inside Dusty Grooves" width="100%" />
 </p>
 
 <p align="center">
