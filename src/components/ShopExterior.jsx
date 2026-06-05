@@ -28,7 +28,7 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
           src={
             isNight
               ? asset("/images/shop-exterior-night.webp")
-              : "/images/shop-exterior-day.webp"
+              : asset("/images/shop-exterior-day.webp")
           }
           alt={
             isNight ? "Dusty Grooves at night" : "Dusty Grooves in the daytime"
