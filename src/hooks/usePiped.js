@@ -150,6 +150,7 @@ export default function usePiped() {
     } catch (err) {
       if (err.name === 'AbortError') return null;
 
+      console.error('[usePiped] searchStream error:', err);
       const message = err.message || 'Failed to find video';
       setStreamError(message);
       setIsLoadingStream(false);
