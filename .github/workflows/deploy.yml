@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Debug env
+        run: echo "API_URL is set ${{ secrets.VITE_API_URL != '' }}"
+
       - name: Build
         run: npm run build
         env:
