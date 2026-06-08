@@ -110,7 +110,7 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 | What | How |
 |------|-----|
 | **The bones** | React + Vite |
-| **The style** | Tailwind CSS with a custom 80s palette - hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
+| **The style** | Tailwind CSS with a custom 80s palette, hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
 | **The movement** | Framer Motion for pose transitions and page animations. CSS keyframes for the ambient stuff - neon flicker, CRT scanlines, vinyl spin, idle bob |
 | **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
 | **The sound** | YouTube via Invidious search - finds the best match for any track, streams through the YouTube IFrame Player |
