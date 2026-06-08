@@ -10,14 +10,12 @@
 // Deploy: npx wrangler deploy
 
 const INSTANCES = [
+  'https://inv.nadeko.net',
   'https://invidious.nerdvpn.de',
   'https://inv.thepixora.com',
   'https://yt.chocolatemoo53.com',
   'https://invidious.tiekoetter.com',
   'https://invidious.f5.si',
-  'https://iv.ggtyler.dev',
-  'https://invidious.adminforge.de',
-  'https://invidious.reallyaweso.me',
 ];
 
 const CORS_HEADERS = {
@@ -32,9 +30,15 @@ async function tryInstances(path) {
 
   for (const instance of INSTANCES) {
     try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+
       const res = await fetch(`${instance}/api/v1${path}`, {
         headers: { 'User-Agent': 'DustyGrooves/1.0' },
+        signal: controller.signal,
       });
+
+      clearTimeout(timer);
 
       if (res.ok) {
         const data = await res.text();
