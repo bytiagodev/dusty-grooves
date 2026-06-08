@@ -258,7 +258,7 @@ Walk in. Search for a song. Let Big Tony do his thing.
 
 ## 📱 Responsive
 
-Every screen size still feels like you're inside the shop. Desktop gives you the full view - walls, crates, counter, neon signs, Big Tony in his element. Tablet crops tighter. Mobile focuses on the counter, the turntable, and Tony. The neon still glows in the background. The vibe stays.
+Every screen size still feels like you're inside the shop. Desktop gives you the full view, walls, crates, counter, neon signs, Big Tony in his element. Tablet crops tighter. Mobile focuses on the counter, the turntable, and Tony. The neon still glows in the background. The vibe stays.
 
 ---
 
