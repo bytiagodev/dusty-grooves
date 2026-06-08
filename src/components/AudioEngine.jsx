@@ -107,7 +107,7 @@ const AudioEngine = forwardRef(function AudioEngine(
           : 0,
       });
     }, 250);
-  }, [onTimeUpdate, stopTimeUpdates]);
+  }, [onTimeUpdate]);
 
   const stopTimeUpdates = useCallback(() => {
     if (timerRef.current) {
