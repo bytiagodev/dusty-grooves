@@ -57,7 +57,7 @@ No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
 
 ```
 You open the app
-    ♫  The shopfront. Day or night. Big Tony outside.
+    ♫  The shopfront. Day or night.
 
 You tap to enter
     ♫  You're inside. Wood panels, neon signs, crates of vinyl everywhere.
@@ -69,7 +69,6 @@ You search for a song
 
 You pick a track
     ♫  Vinyl slides onto the turntable and starts spinning.
-    ♫  Album art on the label. "NOW SPINNING" sign lights up.
     ♫  The music plays. Tony vibes.
 
 Can't find it?
