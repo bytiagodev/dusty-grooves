@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 export default function SpeechBubble({ message }) {
   const [displayed, setDisplayed] = useState("");
 
-  // Typewriter effect — reruns whenever message changes
   useEffect(() => {
     if (!message) return;
     let i = 0;
@@ -50,7 +49,6 @@ export default function SpeechBubble({ message }) {
           {displayed}
         </p>
 
-        {/* Tail pointing down toward Tony */}
         <div
           style={{
             position: "absolute",
@@ -79,3 +77,4 @@ export default function SpeechBubble({ message }) {
     </motion.div>
   );
 }
+

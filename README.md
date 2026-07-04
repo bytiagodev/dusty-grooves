@@ -89,7 +89,7 @@ Something broke?
 
 ## 🌙 Day & Night
 
-This isn't a theme toggle. It's time of day at Dusty Grooves.
+Two views of the same shop. It opens in whichever matches your system's light or dark preference, and the toggle in the corner flips between them.
 
 <p align="center">
   <img src="public/images/shop-exterior-day.webp" alt="Dusty Grooves in the daytime" width="48%" />
@@ -109,7 +109,7 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 | What | How |
 |------|-----|
 | **The bones** | React + Vite |
-| **The style** | Tailwind CSS with a custom 80s palette, hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
+| **The style** | Hand-written CSS3 in a single stylesheet, CSS custom properties for the 80s palette (hot pink neons, electric cyan, deep purple shadows, warm cream daylight), plus inline styles per component |
 | **The movement** | Framer Motion for pose transitions and page animations. CSS keyframes for the ambient stuff - neon flicker, CRT scanlines, vinyl spin, idle bob |
 | **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
 | **The sound** | YouTube via Invidious search - finds the best match for any track, streams through the YouTube IFrame Player |
@@ -134,7 +134,7 @@ User picks track → Last.fm (track.getInfo) → full metadata
                YouTube IFrame Player API → playback
 ```
 
-The Cloudflare Worker proxies requests across 8 Invidious instances with automatic failover. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
+The Cloudflare Worker proxies requests to a list of public Invidious instances, trying each in turn until one answers. That list is volatile: public instances come and go, so it needs the occasional update. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
 
 Album art comes from Last.fm first, with YouTube thumbnails as fallback.
 
@@ -172,31 +172,29 @@ dusty-grooves/
 │   ├── index.js               <- Cloudflare Worker: Invidious proxy + CORS + failover
 │   └── wrangler.toml          <- Worker deploy config
 ├── public/
-│   └── images/                <- Big Tony (6 poses), shop (3 scenes), vinyl SVG
+│   └── images/                <- Big Tony (6 poses) and the shop (3 scenes)
 ├── src/
 │   ├── components/
-│   │   ├── ShopExterior       <- The landing - day or night
-│   │   ├── ShopInterior       <- Inside the shop - where the music lives
+│   │   ├── ShopExterior       <- The landing, day or night
+│   │   ├── ShopInterior       <- Inside the shop, where the music lives
 │   │   ├── BigTony            <- The man himself, state-driven poses
-│   │   ├── SpeechBubble       <- Tony talks with a typewriter effect
-│   │   ├── VinylPlayer        <- SVG vinyl on the turntable, spins when playing
+│   │   ├── SpeechBubble       <- Tony talks, with a typewriter effect
 │   │   ├── SearchBar          <- Find your song
-│   │   ├── SearchResults      <- Records as cards with cover art
+│   │   ├── SearchResults      <- Records as cards
 │   │   ├── NowPlaying         <- Track info, seek bar, playback controls
 │   │   ├── AudioEngine        <- YouTube IFrame Player (hidden, 240p)
-│   │   ├── NeonSign           <- Kept for future use, not actively rendered
 │   │   └── ThemeToggle        <- Day/night switch
 │   ├── hooks/
 │   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── usePiped           <- Invidious search via Worker, returns videoId
-│   │   ├── useAppState        <- The state machine driving Big Tony
-│   │   └── useTheme           <- Day/night mode logic
+│   │   ├── usePiped           <- Invidious search via Worker, returns a videoId
+│   │   └── useAppState        <- The state machine driving Big Tony
 │   ├── utils/
-│   │   └── pipedInstances     <- API client for the Cloudflare Worker
-│   └── index.css              <- CRT scanlines, neon keyframes, VHS noise
+│   │   ├── assetPath          <- Resolves public asset paths for GitHub Pages
+│   │   ├── pipedInstances     <- API client for the Cloudflare Worker
+│   │   └── placeholderArt     <- Inline vinyl SVG shown when a track has no cover
+│   └── index.css              <- Palette, layout, CRT scanlines, neon keyframes
 ├── .env                       <- VITE_LASTFM_KEY + VITE_API_URL (never commit this)
-├── .env.example               <- Template for both keys
-└── tailwind.config.js         <- The 80s theme lives here
+└── .env.example               <- Template for both keys
 ```
 
 ---

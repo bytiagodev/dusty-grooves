@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
+import { PLACEHOLDER_ART } from "../utils/placeholderArt";
 
 const BASE_URL = "https://ws.audioscrobbler.com/2.0/";
 const API_KEY = import.meta.env.VITE_LASTFM_KEY;
-
-const PLACEHOLDER_ART = "/images/vinyl-default.svg";
 
 function getArtUrl(images) {
   if (!images || !images.length) return null;
@@ -62,10 +61,8 @@ export default function useLastFm() {
         listeners: t.listeners ? parseInt(t.listeners, 10) : null,
       }));
 
-      // Set results immediately so the UI shows fast
       setResults(normalised);
 
-      // Backfill artist images in parallel for tracks with no art
       const uniqueArtists = [...new Set(normalised.map((t) => t.artist))];
 
       const artistImages = await Promise.all(

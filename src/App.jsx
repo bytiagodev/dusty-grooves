@@ -6,6 +6,7 @@ import AudioEngine from "./components/AudioEngine";
 import useAppState from "./hooks/useAppState";
 import useLastFm from "./hooks/useLastFm";
 import usePiped from "./hooks/usePiped";
+import { PLACEHOLDER_ART } from "./utils/placeholderArt";
 import "./index.css";
 
 export default function App() {
@@ -15,7 +16,6 @@ export default function App() {
   );
   const [showResults, setShowResults] = useState(false);
 
-  // ── Playback state ──────────────────────────────────────────
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -25,7 +25,6 @@ export default function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "day" ? "night" : "day"));
 
-  // ── Hooks ───────────────────────────────────────────────────
   const { tonyPose, tonyMessage, tonyBob, showBubble, actions } =
     useAppState();
   const {
@@ -39,14 +38,10 @@ export default function App() {
   const { videoId, streamMeta, isLoadingStream, searchStream, clearStream } =
     usePiped();
 
-  // ── Enter the shop ──────────────────────────────────────────
-
   const handleEnterShop = useCallback(() => {
     setScene("interior");
     actions.reset();
   }, [actions]);
-
-  // ── Search ──────────────────────────────────────────────────
 
   const handleSearchFocus = useCallback(() => {
     actions.startSearch();
@@ -69,17 +64,14 @@ export default function App() {
     [actions, searchTracks],
   );
 
-  // ── Track selection: Last.fm metadata → Piped audio ─────────
-
   const handleSelectTrack = useCallback(
     async (track) => {
-      // Stop current playback
+
       audioRef.current?.pause();
       clearStream();
 
       actions.selectTrack(track.name);
 
-      // Step 1: Get full track info from Last.fm
       const fullTrack = await fetchTrackInfo({
         name: track.name,
         artist: track.artist,
@@ -91,23 +83,20 @@ export default function App() {
         return;
       }
 
-      // Step 2: Find audio stream via Piped
       const stream = await searchStream(
         fullTrack.name,
         fullTrack.artist,
-        fullTrack.duration, // duration in seconds from Last.fm, if available
+        fullTrack.duration,
       );
 
-      if (stream?.streamUrl) {
-        // AudioEngine will auto-play; onPlay callback triggers actions.startPlaying
+      if (stream?.videoId) {
+
       } else {
         actions.setError("Could not find audio for this track");
       }
     },
     [actions, fetchTrackInfo, searchStream, clearStream],
   );
-
-  // ── Playback controls ───────────────────────────────────────
 
   const handlePlayPause = useCallback(() => {
     if (!audioRef.current) return;
@@ -126,8 +115,6 @@ export default function App() {
     setVolume(v);
     audioRef.current?.setVolume(v);
   }, []);
-
-  // ── AudioEngine callbacks ───────────────────────────────────
 
   const selectedTrackRef = useRef(null);
   useEffect(() => {
@@ -162,10 +149,6 @@ export default function App() {
     if (dur > 0) setDuration(dur);
   }, []);
 
-  // ── Playback error recovery ──────────────────────────────────
-  // If YouTube refuses to play a video (embedding disabled, etc),
-  // try searching for an alternative version of the same track.
-
   const handleAudioError = useCallback(
     async ({ message, isRecoverable }) => {
       if (isRecoverable && selectedTrack) {
@@ -176,7 +159,7 @@ export default function App() {
         );
 
         if (result?.videoId) {
-          // New videoId set via usePiped → AudioEngine loads new video
+
           return;
         }
       }
@@ -187,20 +170,16 @@ export default function App() {
     [actions, selectedTrack, searchStream],
   );
 
-  // ── Merge album art: Last.fm → YouTube thumbnail fallback ───
-  const PLACEHOLDER = "/images/vinyl-default.svg";
   const displayTrack =
     selectedTrack && streamMeta?.artUrl
       ? {
           ...selectedTrack,
           artUrl:
-            !selectedTrack.artUrl || selectedTrack.artUrl === PLACEHOLDER
+            !selectedTrack.artUrl || selectedTrack.artUrl === PLACEHOLDER_ART
               ? streamMeta.artUrl
               : selectedTrack.artUrl,
         }
       : selectedTrack;
-
-  // ── Render ──────────────────────────────────────────────────
 
   return (
     <div
@@ -209,9 +188,6 @@ export default function App() {
     >
       <div className="crt-overlay" />
 
-      {/* AudioEngine lives outside the AnimatePresence so it
-          persists across scene transitions (not that you'd play
-          music on the exterior, but it avoids unmount issues) */}
       <AudioEngine
         ref={audioRef}
         videoId={videoId}
@@ -249,8 +225,7 @@ export default function App() {
             onSearch={handleSearch}
             onSelectTrack={handleSelectTrack}
             showResults={showResults}
-            /* NowPlaying props */
-            isPlaying={isPlaying}
+                        isPlaying={isPlaying}
             currentTime={currentTime}
             duration={duration}
             volume={volume}
@@ -263,3 +238,4 @@ export default function App() {
     </div>
   );
 }
+

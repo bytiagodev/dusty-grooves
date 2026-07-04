@@ -1,19 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { pipedFetch } from '../utils/pipedInstances';
 
-// ── usePiped ──────────────────────────────────────────────────
-// Searches Invidious (via Cloudflare Worker) to find the right
-// YouTube video for a given track. Returns a videoId that the
-// AudioEngine (YouTube IFrame Player) will play.
-//
-// No stream extraction needed — the IFrame API handles playback
-// directly from the videoId. This simplifies the hook to just:
-//   1. Search Invidious for the track
-//   2. Score results to find the best match
-//   3. Return the videoId
-
-// ── Matching logic ────────────────────────────────────────────
-
 const PENALTY_WORDS = [
   'remix', 'cover', 'karaoke', 'instrumental', 'parody',
   'tutorial', 'lesson', 'reaction', 'review', 'mashup',
@@ -91,8 +78,6 @@ function scoreResult(result, trackName, artistName, expectedDurationSec) {
   return score;
 }
 
-// ── The hook ──────────────────────────────────────────────────
-
 export default function usePiped() {
   const [videoId, setVideoId] = useState(null);
   const [isLoadingStream, setIsLoadingStream] = useState(false);
@@ -121,7 +106,6 @@ export default function usePiped() {
         throw new Error('No results found');
       }
 
-      // Score and pick best match
       const scored = items
         .filter((item) => item.videoId)
         .map((item) => ({
@@ -146,7 +130,7 @@ export default function usePiped() {
       setStreamMeta(meta);
       setIsLoadingStream(false);
 
-      return { streamUrl: best.videoId, videoId: best.videoId, ...meta };
+      return { videoId: best.videoId, ...meta };
     } catch (err) {
       if (err.name === 'AbortError') return null;
 
@@ -166,7 +150,6 @@ export default function usePiped() {
   }, []);
 
   return {
-    streamUrl: videoId,  // backwards compat — App.jsx checks streamUrl
     videoId,
     streamMeta,
     isLoadingStream,
@@ -175,3 +158,4 @@ export default function usePiped() {
     clearStream,
   };
 }
+

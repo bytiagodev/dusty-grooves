@@ -21,7 +21,6 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
       }}
       onClick={onEnter}
     >
-      {/* Background image — crossfades between day and night */}
       <AnimatePresence mode="wait">
         <motion.img
           key={theme}
@@ -48,7 +47,6 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
         />
       </AnimatePresence>
 
-      {/* Night overlay — deepens the darkness slightly */}
       <AnimatePresence>
         {isNight && (
           <motion.div
@@ -67,7 +65,6 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
         )}
       </AnimatePresence>
 
-      {/* "Tap to enter" hint */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -84,7 +81,6 @@ export default function ShopExterior({ theme, onToggleTheme, onEnter }) {
         <TapToEnter isNight={isNight} />
       </motion.div>
 
-      {/* Theme toggle — top right */}
       <div
         style={{
           position: "absolute",
@@ -122,3 +118,4 @@ function TapToEnter({ isNight }) {
     </motion.p>
   );
 }
+

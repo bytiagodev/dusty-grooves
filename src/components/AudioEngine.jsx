@@ -1,17 +1,7 @@
 import { useRef, useEffect, useImperativeHandle, forwardRef, useCallback } from 'react';
 
-// ── AudioEngine (YouTube IFrame Player) ───────────────────────
-// Replaces the HTML5 <audio> element with YouTube's official
-// IFrame Player API. Same imperative API as before — the parent
-// controls playback via ref, receives state via callbacks.
-//
-// Why IFrame instead of <audio>:
-//   YouTube's signed stream URLs (googlevideo.com) return 403
-//   when loaded directly by a browser. The IFrame API is the
-//   only reliable way to play full YouTube audio from a browser.
-//
-// The video is hidden (1x1 pixel). Quality is forced to lowest
-//   available (240p) to minimise data usage — we only need audio.
+// YouTube signs its stream URLs, so a browser cannot fetch the audio directly.
+// A hidden 1x1 IFrame player forced to 240p is the reliable way to play it.
 
 const YT_PLAYER_STATES = {
   UNSTARTED: -1,
@@ -22,7 +12,6 @@ const YT_PLAYER_STATES = {
   CUED: 5,
 };
 
-// Load the YouTube IFrame API script once globally
 let ytApiReady = false;
 let ytApiPromise = null;
 
@@ -59,8 +48,6 @@ const AudioEngine = forwardRef(function AudioEngine(
   const timerRef = useRef(null);
   const currentVideoIdRef = useRef(null);
 
-  // ── Imperative API ──────────────────────────────────────────
-
   useImperativeHandle(ref, () => ({
     play() {
       playerRef.current?.playVideo?.();
@@ -72,7 +59,7 @@ const AudioEngine = forwardRef(function AudioEngine(
       playerRef.current?.seekTo?.(time, true);
     },
     setVolume(v) {
-      // YouTube uses 0-100, our API uses 0-1
+
       playerRef.current?.setVolume?.(Math.round(Math.max(0, Math.min(1, v)) * 100));
     },
     getVolume() {
@@ -89,10 +76,6 @@ const AudioEngine = forwardRef(function AudioEngine(
       return playerRef.current?.getPlayerState?.() === YT_PLAYER_STATES.PLAYING;
     },
   }), []);
-
-  // ── Time update polling ─────────────────────────────────────
-  // YouTube IFrame API doesn't have a timeupdate event.
-  // We poll every 250ms while playing.
 
   const startTimeUpdates = useCallback(() => {
     stopTimeUpdates();
@@ -116,12 +99,10 @@ const AudioEngine = forwardRef(function AudioEngine(
     }
   }, []);
 
-  // ── State change handler ────────────────────────────────────
-
   const handleStateChange = useCallback((event) => {
     switch (event.data) {
       case YT_PLAYER_STATES.PLAYING:
-        // Force lowest quality to save data
+
         playerRef.current?.setPlaybackQuality?.('small');
         startTimeUpdates();
         onPlay?.();
@@ -138,7 +119,7 @@ const AudioEngine = forwardRef(function AudioEngine(
         break;
 
       case YT_PLAYER_STATES.BUFFERING:
-        // Still loading — don't trigger anything yet
+
         break;
     }
   }, [onPlay, onPause, onEnded, startTimeUpdates, stopTimeUpdates]);
@@ -147,7 +128,6 @@ const AudioEngine = forwardRef(function AudioEngine(
     const player = playerRef.current;
     if (!player) return;
 
-    // Force lowest quality
     player.setPlaybackQuality('small');
 
     onLoadedData?.({
@@ -172,8 +152,6 @@ const AudioEngine = forwardRef(function AudioEngine(
     });
   }, [onError]);
 
-  // ── Create / update player ──────────────────────────────────
-
   useEffect(() => {
     if (!videoId) return;
     if (videoId === currentVideoIdRef.current) return;
@@ -184,7 +162,7 @@ const AudioEngine = forwardRef(function AudioEngine(
       await loadYTApi();
 
       if (playerRef.current) {
-        // Player exists — just load the new video
+
         if (autoPlay) {
           playerRef.current.loadVideoById({
             videoId,
@@ -199,7 +177,6 @@ const AudioEngine = forwardRef(function AudioEngine(
         return;
       }
 
-      // First time — create the player
       playerRef.current = new window.YT.Player(containerRef.current, {
         videoId,
         width: 1,
@@ -224,8 +201,6 @@ const AudioEngine = forwardRef(function AudioEngine(
     initOrLoad();
   }, [videoId, autoPlay, handlePlayerReady, handleStateChange, handlePlayerError]);
 
-  // ── Cleanup ─────────────────────────────────────────────────
-
   useEffect(() => {
     return () => {
       stopTimeUpdates();
@@ -233,9 +208,6 @@ const AudioEngine = forwardRef(function AudioEngine(
       playerRef.current = null;
     };
   }, [stopTimeUpdates]);
-
-  // ── Render ──────────────────────────────────────────────────
-  // The div becomes the YouTube iframe. Hidden with CSS.
 
   return (
     <div
@@ -253,3 +225,4 @@ const AudioEngine = forwardRef(function AudioEngine(
 });
 
 export default AudioEngine;
+

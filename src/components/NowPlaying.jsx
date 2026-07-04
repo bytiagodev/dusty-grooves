@@ -1,12 +1,5 @@
 import { motion } from 'framer-motion';
-import { asset } from '../utils/assetPath';
-
-// ── NowPlaying ────────────────────────────────────────────────
-// Displays the currently playing track with album art, song
-// info, and playback controls. Sits above the search dock.
-//
-// Mount/unmount is controlled by AnimatePresence in ShopInterior.
-// This component always renders its content when mounted.
+import { PLACEHOLDER_ART } from '../utils/placeholderArt';
 
 function formatTime(seconds) {
   if (!seconds || !isFinite(seconds)) return '0:00';
@@ -35,27 +28,23 @@ export default function NowPlaying({
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
-      {/* Album art */}
       <div className="now-playing__art-wrap">
         <img
-          src={track.artUrl || '/images/vinyl-default.svg'}
+          src={track.artUrl || PLACEHOLDER_ART}
           alt={`${track.album || track.name} cover`}
           className="now-playing__art"
-          onError={(e) => { e.currentTarget.src = asset('/images/vinyl-default.svg'); }}
+          onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = '1'; e.currentTarget.src = PLACEHOLDER_ART; } }}
           draggable={false}
         />
         {isPlaying && <div className="now-playing__art-pulse" />}
       </div>
 
-      {/* Track info + controls */}
       <div className="now-playing__body">
-        {/* Song title + artist */}
         <div className="now-playing__info">
           <div className="now-playing__track">{track.name}</div>
           <div className="now-playing__artist">{track.artist}</div>
         </div>
 
-        {/* Seek bar */}
         <div className="now-playing__seek-row">
           <span className="now-playing__time">{formatTime(currentTime)}</span>
           <div className="now-playing__seek-track" onClick={(e) => {
@@ -76,7 +65,6 @@ export default function NowPlaying({
         </div>
       </div>
 
-      {/* Play/pause + volume */}
       <div className="now-playing__controls">
         <button
           className="now-playing__play-btn"
@@ -116,3 +104,4 @@ export default function NowPlaying({
     </motion.div>
   );
 }
+

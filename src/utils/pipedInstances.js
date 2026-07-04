@@ -1,10 +1,3 @@
-// ── API Client ────────────────────────────────────────────────
-// Talks to the Dusty Grooves Cloudflare Worker, which proxies
-// Invidious API requests with failover across multiple instances.
-//
-// The Worker handles CORS, instance selection, and failover.
-// This module just needs to know the Worker URL.
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) {

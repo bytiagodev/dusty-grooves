@@ -17,14 +17,12 @@ export default function BigTony({ pose, message, bob, showBubble }) {
   return (
     <div className="big-tony-wrapper">
 
-      {/* Speech bubble — positioned above Tony's head */}
       <AnimatePresence mode="wait">
         {showBubble && message && (
           <SpeechBubble key={message} message={message} />
         )}
       </AnimatePresence>
 
-      {/* Tony sprite — sequential crossfade, tightened to 0.2s */}
       <AnimatePresence mode="wait">
         <motion.img
           key={pose}
@@ -56,3 +54,4 @@ export default function BigTony({ pose, message, bob, showBubble }) {
     </div>
   );
 }
+

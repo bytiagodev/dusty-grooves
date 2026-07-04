@@ -1,14 +1,3 @@
-// ── Dusty Grooves API Worker ──────────────────────────────────
-// Cloudflare Worker that proxies Invidious API requests.
-// Handles instance failover, CORS, and edge caching.
-//
-// Routes:
-//   GET /search?q={query}&type=video  → Invidious search
-//   GET /videos/{videoId}             → Video details + audio streams
-//   GET /health                       → Health check
-//
-// Deploy: npx wrangler deploy
-
 const INSTANCES = [
   'https://invidious.nerdvpn.de',
   'https://inv.thepixora.com',
@@ -23,7 +12,6 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Try each instance until one succeeds
 async function tryInstances(path) {
   const errors = [];
 
@@ -68,7 +56,7 @@ async function tryInstances(path) {
 
 export default {
   async fetch(request) {
-    // CORS preflight
+
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
@@ -80,14 +68,12 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Health check
     if (path === '/health') {
       return new Response(JSON.stringify({ status: 'ok', instances: INSTANCES.length }), {
         headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       });
     }
 
-    // Search: /search?q=...&type=video
     if (path === '/search') {
       const q = url.searchParams.get('q');
       if (!q) {
@@ -99,7 +85,6 @@ export default {
       return tryInstances(`/search${url.search}`);
     }
 
-    // Video details: /videos/{videoId}
     const videoMatch = path.match(/^\/videos\/([a-zA-Z0-9_-]{11})$/);
     if (videoMatch) {
       return tryInstances(`/videos/${videoMatch[1]}`);

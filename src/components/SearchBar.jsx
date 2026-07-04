@@ -93,3 +93,4 @@ export default function SearchBar({ onSearch, onFocus, isSearching, disabled }) 
     </div>
   );
 }
+

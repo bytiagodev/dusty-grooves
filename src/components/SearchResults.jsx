@@ -73,9 +73,6 @@ function RecordCard({ track, index, onSelect, isSelected, isLoading }) {
   );
 }
 
-// NOTE: Mount/unmount is controlled by AnimatePresence in ShopInterior.
-// This component always renders its content when mounted.
-
 export default function SearchResults({
   results,
   selectedTrack,
@@ -99,7 +96,6 @@ export default function SearchResults({
       role="region"
       aria-label="Search results"
     >
-      {/* ── Header — always visible, tap to toggle ── */}
       <button
         className="results-header results-header--btn"
         onClick={() => toggleCollapsed()}
@@ -136,7 +132,6 @@ export default function SearchResults({
         <div className="results-groove" aria-hidden="true" />
       </button>
 
-      {/* ── Collapsible list ── */}
       <AnimatePresence initial={false}>
         {!isCollapsed && (
           <motion.div
@@ -171,3 +166,4 @@ export default function SearchResults({
     </motion.div>
   );
 }
+

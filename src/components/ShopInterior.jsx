@@ -21,8 +21,7 @@ export default function ShopInterior({
   onSearch,
   onSelectTrack,
   showResults,
-  /* NowPlaying props */
-  isPlaying,
+    isPlaying,
   currentTime,
   duration,
   volume,
@@ -47,7 +46,6 @@ export default function ShopInterior({
         overflow: 'hidden',
       }}
     >
-      {/* ── Background ── */}
       <img
         src={asset('/images/shop-interior.webp')}
         alt="Inside Dusty Grooves"
@@ -62,7 +60,6 @@ export default function ShopInterior({
         draggable={false}
       />
 
-      {/* ── Night overlay ── */}
       {isNight && (
         <div style={{
           position: 'absolute',
@@ -72,14 +69,11 @@ export default function ShopInterior({
         }} />
       )}
 
-      {/* ── Theme toggle — top right, consistent with exterior ── */}
       <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', zIndex: 20 }}>
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>
 
-      {/* ── Search dock — bottom center ── */}
       <div className="search-dock">
-        {/* Results — AnimatePresence here so exit works */}
         <AnimatePresence>
           {hasResults && (
             <SearchResults
@@ -92,7 +86,6 @@ export default function ShopInterior({
           )}
         </AnimatePresence>
 
-        {/* Now playing — AnimatePresence here so exit works */}
         <AnimatePresence>
           {selectedTrack && (
             <NowPlaying
@@ -109,7 +102,6 @@ export default function ShopInterior({
           )}
         </AnimatePresence>
 
-        {/* Search bar — always at the bottom */}
         <SearchBar
           onSearch={onSearch}
           onFocus={onSearchFocus}
@@ -117,7 +109,6 @@ export default function ShopInterior({
         />
       </div>
 
-      {/* ── Big Tony (speech bubble lives inside BigTony) ── */}
       <div
         className="tony-container"
         style={{
@@ -139,3 +130,4 @@ export default function ShopInterior({
     </motion.div>
   );
 }
+

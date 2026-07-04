@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* ============================================
-   CSS VARIABLES — DAY / NIGHT THEMES
-   ============================================ */
 :root {
   --hot-pink: #FF006E;
   --electric-cyan: #00F5D4;
@@ -31,9 +28,6 @@
   --scanline-opacity: 0.07;
 }
 
-/* ============================================
-   BASE
-   ============================================ */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -54,23 +48,14 @@ body {
   transition: background-color 0.8s ease, color 0.8s ease;
 }
 
-/* ============================================
-   FONTS
-   ============================================ */
 .font-display { font-family: 'Righteous', cursive; }
 .font-groovy  { font-family: 'Boogaloo', cursive; }
 .font-body    { font-family: 'Nunito', sans-serif; }
 
-/* ============================================
-   SCROLLBAR
-   ============================================ */
 ::-webkit-scrollbar       { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb { background: var(--hot-pink); border-radius: 3px; }
 
-/* ============================================
-   CRT SCANLINES
-   ============================================ */
 .crt-overlay {
   position: fixed;
   inset: 0;
@@ -92,9 +77,6 @@ body {
   background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.25) 100%);
 }
 
-/* ============================================
-   VHS NOISE
-   ============================================ */
 .vhs-noise { position: relative; }
 
 .vhs-noise::before {
@@ -108,9 +90,6 @@ body {
   background-size: 128px 128px;
 }
 
-/* ============================================
-   NEON UTILITIES
-   ============================================ */
 .neon-pink { color: var(--hot-pink); }
 .neon-cyan { color: var(--electric-cyan); }
 
@@ -148,9 +127,6 @@ body {
   border: 1px solid #00F5D4;
 }
 
-/* ============================================
-   KEYFRAMES
-   ============================================ */
 @keyframes neon-flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
   20%, 24%, 55% { opacity: 0.6; }
@@ -190,9 +166,6 @@ body {
   50%       { opacity: 0.5; transform: scale(0.75); }
 }
 
-/* ============================================
-   ANIMATION CLASSES
-   ============================================ */
 .neon-flicker        { animation: neon-flicker 6s infinite; }
 .neon-flicker-subtle { animation: neon-flicker-subtle 8s infinite; }
 .glow-pulse          { animation: glow-pulse 2s ease-in-out infinite; }
@@ -206,11 +179,6 @@ body {
   animation-play-state: paused;
 }
 
-
-
-/* ============================================
-   BIG TONY
-   ============================================ */
 .tony-container {
   left: 0;
   right: 0;
@@ -237,10 +205,6 @@ body {
   height: 82dvh;
 }
 
-
-/* ============================================
-   SEARCH BAR
-   ============================================ */
 .search-bar-wrapper {
   background: rgba(10, 0, 16, 0.82);
   border: 1.5px solid rgba(255, 0, 110, 0.4);
@@ -335,9 +299,6 @@ body {
   background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.3) 30%, rgba(255, 0, 110, 0.3) 70%, transparent);
 }
 
-/* ============================================
-   RESULTS PANEL
-   ============================================ */
 .results-panel {
   background: rgba(10, 0, 16, 0.88);
   border: 1.5px solid rgba(255, 0, 110, 0.3);
@@ -421,9 +382,6 @@ body {
   border-radius: 4px;
 }
 
-/* ============================================
-   RECORD CARDS
-   ============================================ */
 .record-card {
   display: flex;
   align-items: center;
@@ -505,9 +463,6 @@ body {
   animation: dot-pulse 1.4s ease-in-out infinite;
 }
 
-/* ============================================
-   NOW PLAYING
-   ============================================ */
 .now-playing {
   display: flex;
   align-items: center;
@@ -685,9 +640,6 @@ body {
   cursor: pointer;
 }
 
-/* ============================================
-   SEARCH DOCK
-   ============================================ */
 .search-dock {
   position: absolute;
   bottom: 1.25rem;
@@ -700,9 +652,6 @@ body {
   gap: 0.5rem;
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 768px) {
   .tony-container    { padding-right: 0; }
   .tony-bubble-anchor { transform: translateX(0); }
