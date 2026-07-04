@@ -10,7 +10,6 @@
 // Deploy: npx wrangler deploy
 
 const INSTANCES = [
-  'https://inv.nadeko.net',
   'https://invidious.nerdvpn.de',
   'https://inv.thepixora.com',
   'https://yt.chocolatemoo53.com',
