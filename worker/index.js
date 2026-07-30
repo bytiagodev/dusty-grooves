@@ -1,9 +1,5 @@
 const INSTANCES = [
-  'https://invidious.nerdvpn.de',
-  'https://inv.thepixora.com',
-  'https://yt.chocolatemoo53.com',
-  'https://invidious.tiekoetter.com',
-  'https://invidious.f5.si',
+  'https://inv.zoomerville.com/api/v1/search?q=test&type=video'
 ];
 
 const CORS_HEADERS = {
