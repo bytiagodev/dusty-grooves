@@ -115,7 +115,7 @@ export default function usePiped() {
         .sort((a, b) => b._score - a._score);
 
       const best = scored[0];
-      if (!best || best._score < 5) {
+      if (!best || best._score < 3) {
         throw new Error('No confident match found');
       }
 
