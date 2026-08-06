@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { pipedFetch } from "../utils/pipedInstances";
+import { apiFetch } from "../utils/apiClient";
 
 const PENALTY_WORDS = [
   "remix",
@@ -87,7 +87,7 @@ function scoreResult(result, trackName, artistName) {
   return score;
 }
 
-export default function usePiped() {
+export default function useTrackSearch() {
   const [videoId, setVideoId] = useState(null);
   const [isLoadingStream, setIsLoadingStream] = useState(false);
   const [streamError, setStreamError] = useState(null);
@@ -107,7 +107,7 @@ export default function usePiped() {
 
       try {
         const query = encodeURIComponent(`${trackName} ${artistName}`);
-        const { data: searchResults } = await pipedFetch(
+        const { data: searchResults } = await apiFetch(
           `/search?q=${query}&type=video`,
         );
 

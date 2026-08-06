@@ -187,12 +187,12 @@ dusty-grooves/
 │   │   └── ThemeToggle        <- Day/night switch
 │   ├── hooks/
 │   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── usePiped           <- YouTube search via Worker, returns videoId
+│   │   ├── useTrackSearch     <- YouTube search via Worker, returns videoId
 │   │   ├── useAppState        <- The state machine driving Big Tony
 │   │   └── useTheme           <- Day/night mode logic
 │   ├── utils/
 │   │   ├── assetPath          <- Resolves public asset paths for GitHub Pages
-│   │   ├── pipedInstances     <- API client for the Cloudflare Worker
+│   │   ├── apiClient          <- API client for the Cloudflare Worker
 │   │   └── placeholderArt     <- Inline vinyl SVG shown when a track has no cover
 │   └── index.css              <- Palette, layout, CRT scanlines, neon keyframes
 ├── .github/

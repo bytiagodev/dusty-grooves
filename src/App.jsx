@@ -5,7 +5,7 @@ import ShopInterior from "./components/ShopInterior";
 import AudioEngine from "./components/AudioEngine";
 import useAppState from "./hooks/useAppState";
 import useLastFm from "./hooks/useLastFm";
-import usePiped from "./hooks/usePiped";
+import useTrackSearch from "./hooks/useTrackSearch";
 import { PLACEHOLDER_ART } from "./utils/placeholderArt";
 import "./index.css";
 
@@ -36,7 +36,7 @@ export default function App() {
     fetchTrackInfo,
   } = useLastFm();
   const { videoId, streamMeta, isLoadingStream, searchStream, clearStream } =
-    usePiped();
+    useTrackSearch();
 
   const handleEnterShop = useCallback(() => {
     setScene("interior");
@@ -238,4 +238,3 @@ export default function App() {
     </div>
   );
 }
-

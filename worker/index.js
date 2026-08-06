@@ -33,7 +33,7 @@ async function searchYouTube(query, apiKey) {
 
   const data = await res.json();
 
-  // Transform to match the Invidious response shape usePiped.js expects
+  // Transform to the response shape useTrackSearch.js expects
   const items = (data.items || []).map(item => ({
     type: 'video',
     title: item.snippet.title,
