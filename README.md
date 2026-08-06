@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/tony-at-the-shop.webp" alt="Big Tony outside Dusty Grooves at night" width="100%" />
+  <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night - neon sign glowing on a quiet street" width="100%" />
 </p>
 
 <h1 align="center">🎵 Dusty Grooves</h1>
@@ -57,7 +57,7 @@ No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
 
 ```
 You open the app
-    ♫  The shopfront. Day or night.
+    ♫  The shopfront. Day or night. Big Tony at the door.
 
 You tap to enter
     ♫  You're inside. Wood panels, neon signs, crates of vinyl everywhere.
@@ -69,6 +69,7 @@ You search for a song
 
 You pick a track
     ♫  Vinyl slides onto the turntable and starts spinning.
+    ♫  Album art on the label. "NOW SPINNING" sign lights up.
     ♫  The music plays. Tony vibes.
 
 Can't find it?
@@ -89,7 +90,7 @@ Something broke?
 
 ## 🌙 Day & Night
 
-Two views of the same shop. It opens in whichever matches your system's light or dark preference, and the toggle in the corner flips between them.
+This isn't a theme toggle. It's time of day at Dusty Grooves.
 
 <p align="center">
   <img src="public/images/shop-exterior-day.webp" alt="Dusty Grooves in the daytime" width="48%" />
@@ -109,14 +110,14 @@ Dusty Grooves is built with love, free APIs, and zero budget.
 | What | How |
 |------|-----|
 | **The bones** | React + Vite |
-| **The style** | Hand-written CSS3 in a single stylesheet, CSS custom properties for the 80s palette (hot pink neons, electric cyan, deep purple shadows, warm cream daylight), plus inline styles per component |
+| **The style** | Tailwind CSS with a custom 80s palette - hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
 | **The movement** | Framer Motion for pose transitions and page animations. CSS keyframes for the ambient stuff - neon flicker, CRT scanlines, vinyl spin, idle bob |
 | **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
-| **The sound** | YouTube via Invidious search - finds the best match for any track, streams through the YouTube IFrame Player |
-| **The proxy** | Cloudflare Worker - proxies Invidious requests, handles CORS and instance failover. Free tier: 100K req/day |
+| **The sound** | YouTube Data API v3 - finds the best video match for any track |
+| **The proxy** | Cloudflare Worker - keeps the YouTube API key server-side, handles CORS. Free tier: 100K req/day |
 | **The playback** | YouTube IFrame Player API, hidden at 240p to keep data usage low |
 | **Big Tony & the shop** | Dreamed up in the neon dream machine. Six character poses, three shop environments |
-| **The home** | GitHub Pages. Free |
+| **The home** | GitHub Pages + GitHub Actions CI/CD. Free |
 
 **Total cost: $0**
 
@@ -129,12 +130,12 @@ User searches → Last.fm (track.search) → results + album art
                       ↓
 User picks track → Last.fm (track.getInfo) → full metadata
                       ↓
-               Cloudflare Worker → Invidious → YouTube video ID
+               Cloudflare Worker → YouTube Data API v3 → video ID
                       ↓
                YouTube IFrame Player API → playback
 ```
 
-The Cloudflare Worker proxies requests to a list of public Invidious instances, trying each in turn until one answers. That list is volatile: public instances come and go, so it needs the occasional update. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
+The Cloudflare Worker sits between the frontend and YouTube's API, keeping the API key out of the browser bundle entirely. It searches YouTube for the best match, scores results by title and artist against penalty words (remix, karaoke, cover, etc.) and bonus words (official audio, official video), and returns the winning video ID. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
 
 Album art comes from Last.fm first, with YouTube thumbnails as fallback.
 
@@ -169,30 +170,34 @@ Album art comes from Last.fm first, with YouTube thumbnails as fallback.
 ```
 dusty-grooves/
 ├── worker/
-│   ├── index.js               <- Cloudflare Worker: Invidious proxy + CORS + failover
+│   ├── index.js               <- Cloudflare Worker: YouTube Data API v3 proxy + CORS
 │   └── wrangler.toml          <- Worker deploy config
 ├── public/
-│   └── images/                <- Big Tony (6 poses) and the shop (3 scenes)
+│   └── images/                <- Big Tony (6 poses), shop (3 scenes), vinyl SVG
 ├── src/
 │   ├── components/
-│   │   ├── ShopExterior       <- The landing, day or night
-│   │   ├── ShopInterior       <- Inside the shop, where the music lives
+│   │   ├── ShopExterior       <- The landing - day or night
+│   │   ├── ShopInterior       <- Inside the shop - where the music lives
 │   │   ├── BigTony            <- The man himself, state-driven poses
-│   │   ├── SpeechBubble       <- Tony talks, with a typewriter effect
+│   │   ├── SpeechBubble       <- Tony talks with a typewriter effect
 │   │   ├── SearchBar          <- Find your song
-│   │   ├── SearchResults      <- Records as cards
-│   │   ├── NowPlaying         <- Track info, seek bar, playback controls
+│   │   ├── SearchResults      <- Records as cards with cover art
+│   │   ├── NowPlaying         <- What's on the turntable
 │   │   ├── AudioEngine        <- YouTube IFrame Player (hidden, 240p)
 │   │   └── ThemeToggle        <- Day/night switch
 │   ├── hooks/
 │   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── usePiped           <- Invidious search via Worker, returns a videoId
-│   │   └── useAppState        <- The state machine driving Big Tony
+│   │   ├── usePiped           <- YouTube search via Worker, returns videoId
+│   │   ├── useAppState        <- The state machine driving Big Tony
+│   │   └── useTheme           <- Day/night mode logic
 │   ├── utils/
 │   │   ├── assetPath          <- Resolves public asset paths for GitHub Pages
 │   │   ├── pipedInstances     <- API client for the Cloudflare Worker
 │   │   └── placeholderArt     <- Inline vinyl SVG shown when a track has no cover
 │   └── index.css              <- Palette, layout, CRT scanlines, neon keyframes
+├── .github/
+│   └── workflows/
+│       └── deploy.yml         <- GitHub Actions: build with secrets, deploy to gh-pages
 ├── .env                       <- VITE_LASTFM_KEY + VITE_API_URL (never commit this)
 └── .env.example               <- Template for both keys
 ```
@@ -218,19 +223,24 @@ npm install
 
 Head to [last.fm/api/account/create](https://www.last.fm/api/account/create), create a free account, and grab your API key.
 
-**4. Deploy the Cloudflare Worker**
+**4. Get your YouTube Data API v3 key**
 
-The Worker proxies Invidious API calls and handles CORS. You'll need a free [Cloudflare account](https://cloudflare.com).
+Go to [console.cloud.google.com](https://console.cloud.google.com), create a project, enable the YouTube Data API v3, and create an API key under Credentials.
+
+**5. Deploy the Cloudflare Worker**
+
+The Worker proxies YouTube API calls and keeps your key out of the browser bundle. You'll need a free [Cloudflare account](https://cloudflare.com).
 
 ```bash
 cd worker
 npx wrangler login
+npx wrangler secret put YOUTUBE_API_KEY
 npx wrangler deploy
 ```
 
 Copy the Worker URL it gives you (e.g. `https://dusty-grooves-api.<subdomain>.workers.dev`).
 
-**5. Set up the environment**
+**6. Set up the environment**
 
 ```bash
 cp .env.example .env
@@ -243,7 +253,7 @@ VITE_LASTFM_KEY=your_lastfm_api_key
 VITE_API_URL=https://dusty-grooves-api.<subdomain>.workers.dev
 ```
 
-**6. Open the shop**
+**7. Open the shop**
 
 ```bash
 npm run dev
@@ -255,7 +265,7 @@ Walk in. Search for a song. Let Big Tony do his thing.
 
 ## 📱 Responsive
 
-Every screen size still feels like you're inside the shop. Desktop gives you the full view, walls, crates, counter, neon signs, Big Tony in his element. Tablet crops tighter. Mobile focuses on the counter, the turntable, and Tony. The neon still glows in the background. The vibe stays.
+Every screen size still feels like you're inside the shop. Desktop gives you the full view - walls, crates, counter, neon signs, Big Tony in his element. Tablet crops tighter. Mobile focuses on the counter, the turntable, and Tony. The neon still glows in the background. The vibe stays.
 
 ---
 
@@ -264,7 +274,7 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 - **Concept, design, and build** - [bytiagodev](https://github.com/bytiagodev)
 - **Big Tony and all shop visuals** - dreamed up in the neon dream machine
 - **Music metadata and artwork** - [Last.fm API](https://www.last.fm/api)
-- **Audio streams** - [YouTube](https://youtube.com) via [Invidious](https://invidious.io)
+- **Audio search** - [YouTube Data API v3](https://developers.google.com/youtube/v3)
 - **API proxy** - [Cloudflare Workers](https://workers.cloudflare.com)
 - **Fonts** - [Google Fonts](https://fonts.google.com/)
 - **Inspiration** - every record shop that refused to close, every DJ who never stopped spinning, and the decade that gave us the best music on earth
@@ -272,7 +282,7 @@ Every screen size still feels like you're inside the shop. Desktop gives you the
 ---
 
 <p align="center">
-  <img src="public/images/tony-shop-interior.webp" alt="Inside Dusty Grooves" width="100%" />
+  <img src="public/images/shop-interior.webp" alt="Inside Dusty Grooves" width="100%" />
 </p>
 
 <p align="center">
