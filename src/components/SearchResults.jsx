@@ -135,35 +135,34 @@ export default function SearchResults({
       <AnimatePresence initial={false}>
         {!isCollapsed && (
           <motion.div
-            id="results-list"
-            className="results-list"
-            role="list"
-            key="results-list"
+            className="results-collapse"
+            key="results-collapse"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
             style={{ overflow: "hidden" }}
           >
-            {results.map((track, i) => {
-              const isSelected =
-                selectedTrack?.name === track.name &&
-                selectedTrack?.artist === track.artist;
-              return (
-                <RecordCard
-                  key={`${track.name}-${track.artist}-${i}`}
-                  track={track}
-                  index={i}
-                  onSelect={onSelectTrack}
-                  isSelected={isSelected}
-                  isLoading={isFetchingTrack}
-                />
-              );
-            })}
+            <div id="results-list" className="results-list" role="list">
+              {results.map((track, i) => {
+                const isSelected =
+                  selectedTrack?.name === track.name &&
+                  selectedTrack?.artist === track.artist;
+                return (
+                  <RecordCard
+                    key={`${track.name}-${track.artist}-${i}`}
+                    track={track}
+                    index={i}
+                    onSelect={onSelectTrack}
+                    isSelected={isSelected}
+                    isLoading={isFetchingTrack}
+                  />
+                );
+              })}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
   );
 }
-
