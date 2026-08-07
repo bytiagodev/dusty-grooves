@@ -25,8 +25,7 @@ export default function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "day" ? "night" : "day"));
 
-  const { tonyPose, tonyMessage, tonyBob, showBubble, actions } =
-    useAppState();
+  const { tonyPose, tonyMessage, tonyBob, showBubble, actions } = useAppState();
   const {
     results,
     selectedTrack,
@@ -66,7 +65,6 @@ export default function App() {
 
   const handleSelectTrack = useCallback(
     async (track) => {
-
       audioRef.current?.pause();
       clearStream();
 
@@ -89,9 +87,7 @@ export default function App() {
         fullTrack.duration,
       );
 
-      if (stream?.videoId) {
-
-      } else {
+      if (!stream?.videoId) {
         actions.setError("Could not find audio for this track");
       }
     },
@@ -159,7 +155,6 @@ export default function App() {
         );
 
         if (result?.videoId) {
-
           return;
         }
       }
@@ -225,7 +220,7 @@ export default function App() {
             onSearch={handleSearch}
             onSelectTrack={handleSelectTrack}
             showResults={showResults}
-                        isPlaying={isPlaying}
+            isPlaying={isPlaying}
             currentTime={currentTime}
             duration={duration}
             volume={volume}
