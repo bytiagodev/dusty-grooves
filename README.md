@@ -2,46 +2,16 @@
   <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night - neon sign glowing on a quiet street" width="100%" />
 </p>
 
-<h1 align="center">🎵 Dusty Grooves</h1>
+<h1 align="center">Dusty Grooves</h1>
 <h3 align="center">Est. 1983 - A record shop that time forgot</h3>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/vinyl-only-ff006e?style=for-the-badge&labelColor=0a0010" />
-  <img src="https://img.shields.io/badge/since-1983-00f5d4?style=for-the-badge&labelColor=0a0010" />
-  <img src="https://img.shields.io/badge/big%20tony-in%20the%20building-ffe600?style=for-the-badge&labelColor=0a0010" />
-</p>
-
 ---
 
-## The Shop
+## The idea
 
-Somewhere on a quiet side street, wedged between a laundromat and a barber shop, there's a place that never moved on from 1983.
+Dusty Grooves is a browser music player disguised as an 80s record shop. Instead of building a standard interface with buttons and lists, I built the app around a character named Big Tony. 
 
-The neon sign still buzzes. The same guy is still behind the counter. The same music is still on the turntable. The world went digital. Dusty Grooves didn't.
-
-You open the app and you're standing outside the shop. Maybe it's a warm afternoon and the sun is hitting that faded awning. Maybe it's late at night and the only light on the block is the hot pink neon glow of **DUSTY GROOVES** bleeding onto the wet sidewalk. Either way, you found it.
-
-You tap to walk in.
-
----
-
-## 🕶️ Meet Big Tony
-
-<p align="center">
-  <img src="public/images/tony-welcome.png" alt="Big Tony waving hello" height="320" />
-</p>
-
-Big Tony opened Dusty Grooves in 1983 and never left.
-
-The world moved to CDs, then MP3s, then streaming. Tony didn't. He's not bitter about it. He's proud. Every record in his shop is a masterpiece, and he'll tell you why. He calls everyone *"my friend."* He's a local legend.
-
-He greets you like you're a regular, even if it's your first time.
-
-> *"Welcome to Dusty Grooves, my friend!"*
-
-Search for a song, and Tony points you to the right crate. Pick a track, and the vinyl hits the turntable. Tony leans back, presses a headphone to his ear, closes his eyes, and vibes. That's it. That's the app.
-
-No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
+The entire UI is driven by a React state machine. Every app state maps to one of Tony's poses and lines of dialogue. If you search for a song, Tony points to the wall and digs through the crates. If it plays, the vinyl slides onto the turntable and Tony listens. If a search fails, Tony just shrugs and tells you to try another track. There are no standard loading spinners or error modals, just Tony reacting to what the app is doing.
 
 <p align="center">
   <img src="public/images/tony-pointing.png" alt="Big Tony pointing at the records" height="260" />
@@ -51,233 +21,71 @@ No accounts. No playlists. No algorithms. Just a man, his shop, and the music.
   <img src="public/images/tony-searching.png" alt="Big Tony searching through crates" height="260" />
 </p>
 
----
+## Day and Night
 
-## 🎶 What Happens When You Walk In
-
-```
-You open the app
-    ♫  The shopfront. Day or night. Big Tony at the door.
-
-You tap to enter
-    ♫  You're inside. Wood panels, neon signs, crates of vinyl everywhere.
-    ♫  Tony waves. "Welcome to Dusty Grooves, my friend!"
-
-You search for a song
-    ♫  Tony perks up, points at the record wall.
-    ♫  He digs through the crates while results load.
-
-You pick a track
-    ♫  Vinyl slides onto the turntable and starts spinning.
-    ♫  Album art on the label. "NOW SPINNING" sign lights up.
-    ♫  The music plays. Tony vibes.
-
-Can't find it?
-    ♫  Tony shrugs. "Can't find that one, my friend. Try another?"
-
-Something broke?
-    ♫  Tony holds up a cracked record, looking at it with comic dismay.
-    ♫  "Even the best records skip sometimes."
-```
-
-<p align="center">
-  <img src="public/images/tony-shrug.png" alt="Big Tony shrugging" height="260" />
-  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-  <img src="public/images/tony-error.png" alt="Big Tony holding a broken record" height="260" />
-</p>
-
----
-
-## 🌙 Day & Night
-
-This isn't a theme toggle. It's time of day at Dusty Grooves.
+The app features a day and night toggle, but it is tied to the shop's environment rather than a standard dark/light mode theme. During the day, the sunlight hits the faded awning. At night, the hot pink neon sign glows and the street is dark.
 
 <p align="center">
   <img src="public/images/shop-exterior-day.webp" alt="Dusty Grooves in the daytime" width="48%" />
   <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night" width="48%" />
 </p>
 
-**Daytime** - warm sunlight, faded awning, a sandwich board outside that reads *"If it ain't vinyl, it ain't real."* The shop looks lived-in, sun-bleached, and loved.
+There are no accounts, no playlists, and no algorithms. You just walk in, search for a song, and listen.
 
-**Nighttime** - the neon kicks in. Hot pink sign glowing. Warm golden light spilling from the windows onto an empty sidewalk. The street is dark and quiet. Dusty Grooves is the only light on the block. It feels like discovering a secret.
+## How the audio works
 
----
+Finding reliable audio for a web app is hard, so I used the Last.fm API for track metadata and album art, and the YouTube Data API to actually play the music.
 
-## 🔧 Under the Hood
+To keep the YouTube API key out of the frontend code, I set up a Cloudflare Worker to proxy the requests. Since a YouTube search often returns remixes, covers, or karaoke versions, the Worker scores the results before returning them. It gives points for exact title matches and official channels, and heavily penalizes words like "remix" or "live". If the top result does not pass a certain score threshold, the app refuses to play it and Tony tells you he cannot find that record.
 
-Dusty Grooves is built with love, free APIs, and zero budget.
+Playback happens through a hidden YouTube iframe player forced to 240p to save bandwidth. 
 
-| What | How |
-|------|-----|
-| **The bones** | React + Vite |
-| **The style** | Tailwind CSS with a custom 80s palette - hot pink neons, electric cyan, deep purple shadows, warm cream daylight |
-| **The movement** | Framer Motion for pose transitions and page animations. CSS keyframes for the ambient stuff - neon flicker, CRT scanlines, vinyl spin, idle bob |
-| **The music info** | Last.fm API - song metadata, album art, artist info. Free with an API key |
-| **The sound** | YouTube Data API v3 - finds the best video match for any track |
-| **The proxy** | Cloudflare Worker - keeps the YouTube API key server-side, handles CORS. Free tier: 100K req/day |
-| **The playback** | YouTube IFrame Player API, hidden at 240p to keep data usage low |
-| **Big Tony & the shop** | Dreamed up in the neon dream machine. Six character poses, three shop environments |
-| **The home** | GitHub Pages + GitHub Actions CI/CD. Free |
+## Tech stack
 
-**Total cost: $0**
+| Layer | Choice |
+| --- | --- |
+| Framework | React and Vite |
+| Styling | Tailwind CSS and CSS keyframes |
+| Metadata | Last.fm API |
+| Audio | YouTube Data API v3 via Cloudflare Worker proxy |
+| Hosting | GitHub Pages and GitHub Actions |
 
----
+## Project structure
 
-## 🎵 How the Audio Works
-
-```
-User searches → Last.fm (track.search) → results + album art
-                      ↓
-User picks track → Last.fm (track.getInfo) → full metadata
-                      ↓
-               Cloudflare Worker → YouTube Data API v3 → video ID
-                      ↓
-               YouTube IFrame Player API → playback
-```
-
-The Cloudflare Worker sits between the frontend and YouTube's API, keeping the API key out of the browser bundle entirely. It searches YouTube for the best match, scores results by title and artist against penalty words (remix, karaoke, cover, etc.) and bonus words (official audio, official video), and returns the winning video ID. The YouTube IFrame Player runs hidden at 240p to keep data usage low.
-
-Album art comes from Last.fm first, with YouTube thumbnails as fallback.
-
----
-
-## 🎨 The Palette
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Hot%20Pink-%23FF006E-FF006E?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Electric%20Cyan-%2300F5D4-00F5D4?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Deep%20Purple-%233D0066-3D0066?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Neon%20Orange-%23FF6B00-FF6B00?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Near%20Black-%230A0010-0A0010?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Warm%20Cream-%23FFF5E1-FFF5E1?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Wood%20Brown-%235C3D1A-5C3D1A?style=for-the-badge" />
-</p>
-
-| Colour | Hex | Usage |
-|--------|-----|-------|
-| Hot Pink | `#FF006E` | Neon signs, active states, the glow |
-| Electric Cyan | `#00F5D4` | Highlights, hover states, "NOW SPINNING" |
-| Deep Purple | `#3D0066` | Shadows, depth, nighttime |
-| Neon Orange | `#FF6B00` | Warmth, accents |
-| Near Black | `#0A0010` | The night |
-| Warm Cream | `#FFF5E1` | The daylight |
-| Wood Brown | `#5C3D1A` | The counter, the crates, the walls |
-
----
-
-## 📂 The Shop Layout
-
-```
+```text
 dusty-grooves/
 ├── worker/
-│   ├── index.js               <- Cloudflare Worker: YouTube Data API v3 proxy + CORS
+│   ├── index.js               <- Cloudflare Worker proxy
 │   └── wrangler.toml          <- Worker deploy config
 ├── public/
-│   └── images/                <- Big Tony (6 poses), shop (3 scenes), vinyl SVG
+│   └── images/                <- Big Tony poses and shop scenes
 ├── src/
 │   ├── components/
-│   │   ├── ShopExterior       <- The landing - day or night
-│   │   ├── ShopInterior       <- Inside the shop - where the music lives
-│   │   ├── BigTony            <- The man himself, state-driven poses
-│   │   ├── SpeechBubble       <- Tony talks with a typewriter effect
-│   │   ├── SearchBar          <- Find your song
+│   │   ├── ShopExterior       <- The landing page
+│   │   ├── ShopInterior       <- Inside the shop
+│   │   ├── BigTony            <- State-driven character poses
+│   │   ├── SpeechBubble       <- Typewriter effect for dialogue
 │   │   ├── SearchResults      <- Records as cards with cover art
-│   │   ├── NowPlaying         <- What's on the turntable
-│   │   ├── AudioEngine        <- YouTube IFrame Player (hidden, 240p)
-│   │   └── ThemeToggle        <- Day/night switch
+│   │   └── AudioEngine        <- Hidden YouTube iframe player
 │   ├── hooks/
 │   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── useTrackSearch     <- YouTube search via Worker, returns videoId
-│   │   ├── useAppState        <- The state machine driving Big Tony
-│   │   └── useTheme           <- Day/night mode logic
-│   ├── utils/
-│   │   ├── assetPath          <- Resolves public asset paths for GitHub Pages
-│   │   ├── apiClient          <- API client for the Cloudflare Worker
-│   │   └── placeholderArt     <- Inline vinyl SVG shown when a track has no cover
-│   └── index.css              <- Palette, layout, CRT scanlines, neon keyframes
+│   │   ├── useTrackSearch     <- YouTube search via Worker
+│   │   └── useAppState        <- The state machine driving the UI
+│   └── index.css              <- Palette, layout, and neon keyframes
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml         <- GitHub Actions: build with secrets, deploy to gh-pages
-├── .env                       <- VITE_LASTFM_KEY + VITE_API_URL (never commit this)
-└── .env.example               <- Template for both keys
+│       └── deploy.yml         <- GitHub Actions build and deploy
+└── .env.example               <- Template for API keys
 ```
 
----
+## Running it locally
 
-## 🚀 Getting Started
-
-**1. Clone the shop**
-
-```bash
-git clone https://github.com/bytiagodev/dusty-grooves.git
-cd dusty-grooves
-```
-
-**2. Install the vinyl**
-
-```bash
-npm install
-```
-
-**3. Get your Last.fm key**
-
-Head to [last.fm/api/account/create](https://www.last.fm/api/account/create), create a free account, and grab your API key.
-
-**4. Get your YouTube Data API v3 key**
-
-Go to [console.cloud.google.com](https://console.cloud.google.com), create a project, enable the YouTube Data API v3, and create an API key under Credentials.
-
-**5. Deploy the Cloudflare Worker**
-
-The Worker proxies YouTube API calls and keeps your key out of the browser bundle. You'll need a free [Cloudflare account](https://cloudflare.com).
-
-```bash
-cd worker
-npx wrangler login
-npx wrangler secret put YOUTUBE_API_KEY
-npx wrangler deploy
-```
-
-Copy the Worker URL it gives you (e.g. `https://dusty-grooves-api.<subdomain>.workers.dev`).
-
-**6. Set up the environment**
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in both keys:
-
-```
-VITE_LASTFM_KEY=your_lastfm_api_key
-VITE_API_URL=https://dusty-grooves-api.<subdomain>.workers.dev
-```
-
-**7. Open the shop**
-
-```bash
-npm run dev
-```
-
-Walk in. Search for a song. Let Big Tony do his thing.
-
----
-
-## 📱 Responsive
-
-Every screen size still feels like you're inside the shop. Desktop gives you the full view - walls, crates, counter, neon signs, Big Tony in his element. Tablet crops tighter. Mobile focuses on the counter, the turntable, and Tony. The neon still glows in the background. The vibe stays.
-
----
-
-## 🎙️ Credits
-
-- **Concept, design, and build** - [bytiagodev](https://github.com/bytiagodev)
-- **Big Tony and all shop visuals** - dreamed up in the neon dream machine
-- **Music metadata and artwork** - [Last.fm API](https://www.last.fm/api)
-- **Audio search** - [YouTube Data API v3](https://developers.google.com/youtube/v3)
-- **API proxy** - [Cloudflare Workers](https://workers.cloudflare.com)
-- **Fonts** - [Google Fonts](https://fonts.google.com/)
-- **Inspiration** - every record shop that refused to close, every DJ who never stopped spinning, and the decade that gave us the best music on earth
+1. Clone the repository and install the dependencies.
+2. Head to the Last.fm API page to create a free account and grab your API key.
+3. Go to the Google Cloud Console, enable the YouTube Data API v3, and create an API key.
+4. Deploy the Cloudflare Worker using Wrangler to keep your YouTube key server-side.
+5. Copy the `.env.example` file to `.env` and fill in your Last.fm key and your new Worker URL.
+6. Run the dev server and open the shop.
 
 ---
 
