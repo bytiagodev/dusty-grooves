@@ -3,19 +3,11 @@
 :root {
   --hot-pink: #FF006E;
   --electric-cyan: #00F5D4;
-  --deep-purple: #3D0066;
-  --neon-orange: #FF6B00;
-  --neon-yellow: #FFE600;
-  --near-black: #0A0010;
   --warm-cream: #FFF5E1;
-  --wood-brown: #5C3D1A;
-  --wood-light: #8B6914;
 
   --bg-primary: #FFF5E1;
   --bg-secondary: #F5E6C8;
   --text-primary: #1a0a00;
-  --text-secondary: #5C3D1A;
-  --neon-intensity: 0.4;
   --scanline-opacity: 0.03;
 }
 
@@ -23,8 +15,6 @@
   --bg-primary: #0A0010;
   --bg-secondary: #0D0020;
   --text-primary: #FFF5E1;
-  --text-secondary: #00F5D4;
-  --neon-intensity: 1;
   --scanline-opacity: 0.07;
 }
 
@@ -283,7 +273,6 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   opacity: 0.55;
-  font-family: var(--font-display, inherit);
   color: var(--electric-cyan);
 }
 
