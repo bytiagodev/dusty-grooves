@@ -73,7 +73,6 @@ export default function useAppState() {
 
   const enteredAt = useRef(0);
 
-  const pendingTransition = useRef(null);
   const dwellTimer = useRef(null);
 
   useEffect(() => {
@@ -104,12 +103,10 @@ export default function useAppState() {
         setState(nextState);
         setMessage(msg);
         enteredAt.current = Date.now();
-        pendingTransition.current = null;
       };
 
       if (remaining > 0) {
 
-        pendingTransition.current = nextState;
         dwellTimer.current = setTimeout(doTransition, remaining);
       } else {
         doTransition();
