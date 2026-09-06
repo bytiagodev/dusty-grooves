@@ -35,24 +35,9 @@ async function searchYouTube(query, apiKey) {
 
   // Transform to the response shape useTrackSearch.js expects
   const items = (data.items || []).map(item => ({
-    type: 'video',
     title: item.snippet.title,
     videoId: item.id.videoId,
     author: item.snippet.channelTitle,
-    authorId: item.snippet.channelId,
-    authorVerified: false,
-    description: item.snippet.description,
-    videoThumbnails: [
-      {
-        quality: 'high',
-        url: item.snippet.thumbnails?.high?.url || '',
-        width: 480,
-        height: 360,
-      },
-    ],
-    viewCount: 0,
-    lengthSeconds: 0,
-    liveNow: false,
   }));
 
   return items;
