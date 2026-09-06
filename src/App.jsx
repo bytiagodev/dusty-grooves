@@ -7,7 +7,6 @@ import useAppState from "./hooks/useAppState";
 import useLastFm from "./hooks/useLastFm";
 import useTrackSearch from "./hooks/useTrackSearch";
 import { PLACEHOLDER_ART } from "./utils/placeholderArt";
-import "./index.css";
 
 export default function App() {
   const [scene, setScene] = useState("exterior");
@@ -25,7 +24,8 @@ export default function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "day" ? "night" : "day"));
 
-  const { tonyPose, tonyMessage, tonyBob, showBubble, actions } = useAppState();
+  const { appState, tonyPose, tonyMessage, tonyBob, showBubble, actions } =
+    useAppState();
   const {
     results,
     selectedTrack,
@@ -117,8 +117,19 @@ export default function App() {
     selectedTrackRef.current = selectedTrack;
   }, [selectedTrack]);
 
+  const appStateRef = useRef(appState);
+  useEffect(() => {
+    appStateRef.current = appState;
+  }, [appState]);
+
   const handleAudioPlay = useCallback(() => {
     setIsPlaying(true);
+
+    if (appStateRef.current === "paused") {
+      actions.resumePlayback();
+      return;
+    }
+
     const track = selectedTrackRef.current;
     if (track) {
       actions.startPlaying(track.name, track.artist);
