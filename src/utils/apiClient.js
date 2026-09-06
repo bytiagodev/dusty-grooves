@@ -28,7 +28,7 @@ async function fetchWithTimeout(url, timeoutMs = REQUEST_TIMEOUT_MS) {
 
 async function apiFetch(path) {
   if (!API_URL) {
-    throw new Error('VITE_API_URL not configured — see .env.example');
+    throw new Error('VITE_API_URL not configured, see .env.example');
   }
 
   const res = await fetchWithTimeout(`${API_URL}${path}`);
@@ -42,4 +42,4 @@ async function apiFetch(path) {
   return { data };
 }
 
-export { apiFetch, REQUEST_TIMEOUT_MS };
+export { apiFetch };
