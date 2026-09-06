@@ -4,12 +4,9 @@ import { useRef, useEffect, useImperativeHandle, forwardRef, useCallback } from 
 // A hidden 1x1 IFrame player forced to 240p is the reliable way to play it.
 
 const YT_PLAYER_STATES = {
-  UNSTARTED: -1,
   ENDED: 0,
   PLAYING: 1,
   PAUSED: 2,
-  BUFFERING: 3,
-  CUED: 5,
 };
 
 let ytApiReady = false;
@@ -85,9 +82,6 @@ const AudioEngine = forwardRef(function AudioEngine(
       onTimeUpdate?.({
         currentTime: player.getCurrentTime?.() || 0,
         duration: player.getDuration?.() || 0,
-        buffered: player.getVideoLoadedFraction?.()
-          ? player.getVideoLoadedFraction() * (player.getDuration?.() || 0)
-          : 0,
       });
     }, 250);
   }, [onTimeUpdate]);
@@ -117,10 +111,6 @@ const AudioEngine = forwardRef(function AudioEngine(
         stopTimeUpdates();
         onEnded?.();
         break;
-
-      case YT_PLAYER_STATES.BUFFERING:
-
-        break;
     }
   }, [onPlay, onPause, onEnded, startTimeUpdates, stopTimeUpdates]);
 
@@ -146,8 +136,6 @@ const AudioEngine = forwardRef(function AudioEngine(
 
     onError?.({
       message: codeMap[event.data] || `YouTube player error (code ${event.data})`,
-      code: event.data,
-      resumePosition: playerRef.current?.getCurrentTime?.() || 0,
       isRecoverable: event.data === 2 || event.data === 5,
     });
   }, [onError]);
