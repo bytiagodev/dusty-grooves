@@ -39,7 +39,7 @@ async function apiFetch(path) {
   }
 
   const data = await res.json();
-  return { data, instance: API_URL };
+  return { data };
 }
 
 export { apiFetch, REQUEST_TIMEOUT_MS };

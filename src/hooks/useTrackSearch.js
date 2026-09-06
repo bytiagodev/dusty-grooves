@@ -130,8 +130,6 @@ export default function useTrackSearch() {
         }
 
         const meta = {
-          videoTitle: best.title,
-          videoDuration: 0,
           videoId: best.videoId,
           artUrl: `https://i.ytimg.com/vi/${best.videoId}/hqdefault.jpg`,
         };
