@@ -5,6 +5,12 @@
 <h1 align="center">Dusty Grooves</h1>
 <h3 align="center">Est. 1983 - A record shop that time forgot</h3>
 
+<p align="center">
+  <a href="https://bytiago.com/">🌐 <strong>bytiago.com</strong> &nbsp;•&nbsp; View my full portfolio</a>
+</p>
+
+> 🏁 **Note:** This project is archived and no longer actively maintained.
+
 ---
 
 ## The idea
@@ -86,6 +92,11 @@ dusty-grooves/
 4. Deploy the Cloudflare Worker using Wrangler to keep your YouTube key server-side.
 5. Copy the `.env.example` file to `.env` and fill in your Last.fm key and your new Worker URL.
 6. Run the dev server and open the shop.
+
+---
+
+### More of my work
+If you enjoyed this project, check out my full portfolio and other experiments at [bytiago.com](https://bytiago.com/).
 
 ---
 
