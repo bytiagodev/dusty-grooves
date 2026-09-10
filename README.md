@@ -6,18 +6,18 @@
 <h3 align="center">Est. 1983 - A record shop that time forgot</h3>
 
 <p align="center">
-  <a href="https://bytiago.com/"><strong>bytiago.com</strong> &nbsp;•&nbsp; View my full portfolio</a>
+  <a href="https://bytiagodev.github.io/dusty-grooves"><strong>Visit the shop</strong></a>
 </p>
 
-> **Note:** This project is archived and no longer actively maintained.
+> **Archived.** The shop is still open and still plays records. Nothing new is being added to it.
 
 ---
 
 ## The idea
 
-Dusty Grooves is a browser music player disguised as an 80s record shop. Instead of building a standard interface with buttons and lists, I built the app around a character named Big Tony. 
+Dusty Grooves is a browser music player disguised as an 80s record shop. Instead of a standard interface with buttons and lists, I built the app around a character named Big Tony.
 
-The entire UI is driven by a React state machine. Every app state maps to one of Tony's poses and lines of dialogue. If you search for a song, Tony points to the wall and digs through the crates. If it plays, the vinyl slides onto the turntable and Tony listens. If a search fails, Tony just shrugs and tells you to try another track. There are no standard loading spinners or error modals, just Tony reacting to what the app is doing.
+The whole UI runs off a React state machine. Every app state maps to one of Tony's poses and a line of dialogue. Search for a song and Tony points at the wall, then digs through the crates. When it plays, he listens. When a search fails, he shrugs and tells you to try another record. No spinners, no error modals, just Tony reacting to whatever the app is doing.
 
 <p align="center">
   <img src="public/images/tony-pointing.png" alt="Big Tony pointing at the records" height="260" />
@@ -27,24 +27,30 @@ The entire UI is driven by a React state machine. Every app state maps to one of
   <img src="public/images/tony-searching.png" alt="Big Tony searching through crates" height="260" />
 </p>
 
-## Day and Night
+## Day and night
 
-The app features a day and night toggle, but it is tied to the shop's environment rather than a standard dark/light mode theme. During the day, the sunlight hits the faded awning. At night, the hot pink neon sign glows and the street is dark.
+There is a day and night toggle, but it belongs to the shop rather than to the interface. In the day the sunlight hits the faded awning. At night the hot pink neon comes on and the street is wet and dark.
 
 <p align="center">
   <img src="public/images/shop-exterior-day.webp" alt="Dusty Grooves in the daytime" width="48%" />
   <img src="public/images/shop-exterior-night.webp" alt="Dusty Grooves at night" width="48%" />
 </p>
 
-There are no accounts, no playlists, and no algorithms. You just walk in, search for a song, and listen.
+No accounts, no playlists, no algorithms. You walk in, ask for a song, and listen to it.
 
 ## How the audio works
 
-Finding reliable audio for a web app is hard, so I used the Last.fm API for track metadata and album art, and the YouTube Data API to actually play the music.
+Last.fm supplies the track metadata and album art. The YouTube Data API supplies the audio. A Cloudflare Worker sits between them and the browser for one reason: the YouTube key lives as a Worker secret and never reaches the bundle.
 
-To keep the YouTube API key out of the frontend code, I set up a Cloudflare Worker to proxy the requests. Since a YouTube search often returns remixes, covers, or karaoke versions, the Worker scores the results before returning them. It gives points for exact title matches and official channels, and heavily penalizes words like "remix" or "live". If the top result does not pass a certain score threshold, the app refuses to play it and Tony tells you he cannot find that record.
+A YouTube search for any song returns remixes, covers, karaoke versions and live cuts alongside the actual record, so every result is scored in the app before one is chosen. Points for the track name in the title, points for the artist in the title or the channel, points for an official upload, heavy penalties for remix, cover and karaoke, smaller ones for live and acoustic. If nothing clears the threshold, the app refuses to play anything and Tony tells you he does not have that one. Playback runs through a hidden YouTube iframe forced to 240p, since there is no audio-only mode and there is no point downloading video nobody looks at.
 
-Playback happens through a hidden YouTube iframe player forced to 240p to save bandwidth. 
+## The part that broke twice
+
+Worth writing down, because it is the whole story of this project.
+
+The first build streamed audio from Piped. By 2026 every public Piped instance was dead. The second build resolved a video ID through Invidious and played it in the YouTube player, which worked until the public instance list shrank to a handful, and those started answering datacentre traffic with captchas and bot checks. That is correct behaviour from volunteer-run servers, not a fault on their side.
+
+The third build uses the official YouTube Data API through the Worker, with a published quota I can read in advance instead of a host list I have to hope about. Free public proxies are the right call for a prototype and the wrong one for anything meant to stay up.
 
 ## Tech stack
 
@@ -56,42 +62,32 @@ Playback happens through a hidden YouTube iframe player forced to 240p to save b
 | Audio | YouTube Data API v3 via Cloudflare Worker proxy |
 | Hosting | GitHub Pages and GitHub Actions |
 
-## Project structure
+## Floor plan
 
 ```text
 dusty-grooves/
-├── worker/
-│   ├── index.js               <- Cloudflare Worker proxy
-│   └── wrangler.toml          <- Worker deploy config
-├── public/
-│   └── images/                <- Big Tony poses and shop scenes
-├── src/
-│   ├── components/
-│   │   ├── ShopExterior       <- The landing page
-│   │   ├── ShopInterior       <- Inside the shop
-│   │   ├── BigTony            <- State-driven character poses
-│   │   ├── SpeechBubble       <- Typewriter effect for dialogue
-│   │   ├── SearchResults      <- Records as cards with cover art
-│   │   └── AudioEngine        <- Hidden YouTube iframe player
-│   ├── hooks/
-│   │   ├── useLastFm          <- Last.fm API calls
-│   │   ├── useTrackSearch     <- YouTube search via Worker
-│   │   └── useAppState        <- The state machine driving the UI
-│   └── index.css              <- Palette, layout, and neon keyframes
-├── .github/
-│   └── workflows/
-│       └── deploy.yml         <- GitHub Actions build and deploy
-└── .env.example               <- Template for API keys
+├── worker/index.js            <- Cloudflare Worker, holds the YouTube key
+├── public/images/             <- Big Tony poses and shop scenes
+└── src/
+    ├── components/
+    │   ├── ShopExterior       <- The street, day and night
+    │   ├── ShopInterior       <- Inside the shop
+    │   ├── BigTony            <- State-driven poses
+    │   ├── SpeechBubble       <- Typewriter dialogue
+    │   └── AudioEngine        <- Hidden YouTube player
+    └── hooks/
+        ├── useLastFm          <- Metadata and album art
+        ├── useTrackSearch     <- Worker search and result scoring
+        └── useAppState        <- The state machine driving Tony
 ```
 
-## Running it locally
+## If you want to run it
 
-1. Clone the repository and install the dependencies.
-2. Head to the Last.fm API page to create a free account and grab your API key.
-3. Go to the Google Cloud Console, enable the YouTube Data API v3, and create an API key.
-4. Deploy the Cloudflare Worker using Wrangler to keep your YouTube key server-side.
-5. Copy the `.env.example` file to `.env` and fill in your Last.fm key and your new Worker URL.
-6. Run the dev server and open the shop.
+You need a free Last.fm API key and a YouTube Data API key from the Google Cloud Console. Deploy the Worker with Wrangler from inside the `worker` directory so your YouTube key stays server-side, copy `.env.example` to `.env`, fill in the Last.fm key and the Worker URL, then start the dev server.
+
+## What I would fix if the shop reopened
+
+When YouTube blocks a video from being embedded, the app gives up instead of trying the next best scored result. The list is already ranked, it just is not held onto after the first pick. That is the one outstanding change worth making, and it is the reason this is archived honestly rather than quietly.
 
 ---
 
@@ -101,4 +97,8 @@ dusty-grooves/
 
 <p align="center">
   <i>If it ain't vinyl, it ain't real.</i>
+</p>
+
+<p align="center">
+  <sub>Built by <a href="https://bytiago.com/">Tiago Teixeira</a></sub>
 </p>
